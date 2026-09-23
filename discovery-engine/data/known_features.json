@@ -1,0 +1,52 @@
+{
+  "_comment": "Known Google Photos features used to compute Novelty Score in opportunity scoring. Update this list before each scoring run. A cluster whose failure_mode is 'addressed' by a feature here gets a lower novelty score.",
+  "features": [
+    {
+      "name": "People & Pets search",
+      "description": "Automatically groups photos by recognized faces",
+      "addresses_failure_modes": ["person_based"],
+      "addresses_retrieval_types": ["person_based"]
+    },
+    {
+      "name": "Location / Places search",
+      "description": "Search by city, landmark, or GPS location",
+      "addresses_failure_modes": ["location_imprecision"],
+      "addresses_retrieval_types": ["location_based"]
+    },
+    {
+      "name": "Date range filter",
+      "description": "Filter photos by year, month, or custom date range",
+      "addresses_failure_modes": ["temporal_ambiguity"],
+      "addresses_retrieval_types": ["time_based"],
+      "notes": "Requires user to know approximate date — does NOT handle vague descriptions like 'last Christmas'"
+    },
+    {
+      "name": "Object / scene search",
+      "description": "Natural language search for objects (e.g. 'dog', 'birthday cake', 'beach')",
+      "addresses_failure_modes": ["search_vocabulary_mismatch"],
+      "addresses_retrieval_types": ["object_based"],
+      "notes": "Works for common objects but fails for niche or contextual descriptions"
+    },
+    {
+      "name": "Albums",
+      "description": "Manual and auto-created albums (e.g. Trips, Animations)",
+      "addresses_failure_modes": ["no_album_structure"],
+      "addresses_retrieval_types": ["event_based"],
+      "notes": "Only useful if user organized photos previously — fails for unorganized libraries"
+    },
+    {
+      "name": "Memories / On This Day",
+      "description": "Surfaces photos from the same date in previous years",
+      "addresses_failure_modes": [],
+      "addresses_retrieval_types": ["time_based"],
+      "notes": "Passive — does not help active retrieval of a specific photo"
+    },
+    {
+      "name": "Lens / Visual search",
+      "description": "Search using a reference image or camera",
+      "addresses_failure_modes": ["visual_only_memory"],
+      "addresses_retrieval_types": ["object_based"],
+      "notes": "Requires user to have a reference image — not helpful for pure memory-based retrieval"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+You are an expert user researcher analysing user feedback about the Google Photos app.
+Your task is to comprehensively analyze this user feedback across 4 core dimensions:
+1. Retrieval Pattern: What kind of photo/memory is the user trying to find?
+2. Memory Cue: What does the user explicitly remember vs. forget or struggle to recall?
+3. Failure Mode: Where does the search or retrieval experience break down?
+4. Search Behavior: What actions did the user take to find the photo, and what was the outcome?
+
+You MUST return a valid JSON object matching this exact schema:
+{{
+  "retrieval_types": ["event_based", "person_based", "location_based", "object_based", "time_based", "emotion_based", "unknown"],
+  "retrieval_description": "A concise one-line summary of what the user is trying to retrieve",
+  "retrieval_confidence": 0.95,
+
+  "memory_cue": {{
+    "remembered_time": "time or date mentioned (or null)",
+    "remembered_location": "location mentioned (or null)",
+    "remembered_people": "people mentioned (or null)",
+    "remembered_object": "objects mentioned (or null)",
+    "remembered_emotion": "emotions mentioned (or null)",
+    "forgotten": [],
+    "uncertainty_present": false,
+    "confidence": 0.95
+  }},
+
+  "failure_modes": ["search_vocabulary_mismatch", "temporal_ambiguity", "location_imprecision", "no_album_structure", "visual_only_memory", "search_ux_breakdown", "wrong_confidence_signal", "data_loss", "unknown"],
+  "primary_failure_mode": "The single most significant failure mode from the allowed list",
+  "failure_evidence_quote": "A verbatim quote from the text that proves this failure",
+  "failure_confidence": 0.95,
+  "is_data_loss": false,
+
+  "search_behavior": {{
+    "behaviors": ["approximate_date_browsing", "keyword_guessing", "album_scanning", "asked_someone_else", "gave_up", "used_third_party_tool", "unknown_browsing"],
+    "outcome": "failed",
+    "evidence_quote": "A verbatim quote detailing their action (or null)",
+    "workaround_used": false,
+    "workaround_tool": null,
+    "perspective": "first_person",
+    "confidence": 0.95
+  }}
+}}
+
+Guidelines:
+- Allowed values for `retrieval_types`: "event_based", "person_based", "location_based", "object_based", "time_based", "emotion_based", "unknown".
+- Allowed values for `failure_modes` and `primary_failure_mode`: "search_vocabulary_mismatch", "temporal_ambiguity", "location_imprecision", "no_album_structure", "visual_only_memory", "search_ux_breakdown", "wrong_confidence_signal", "data_loss", "unknown".
+- Allowed values for `behaviors`: "approximate_date_browsing", "keyword_guessing", "album_scanning", "asked_someone_else", "gave_up", "used_third_party_tool", "unknown_browsing".
+- Allowed values for `outcome`: "failed", "partial", "succeeded", "unknown".
+- If user mentions no specific cues for a field, use null.
+- Be accurate and extract only what is present in the text.
+
+Input Text:
+{text}

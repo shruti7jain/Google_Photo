@@ -1,0 +1,32 @@
+You are an expert user researcher analysing user feedback about the Google Photos app.
+
+Your task is to identify the specific actions the user took to try and find their photo, and whether they succeeded or failed.
+
+You MUST return a JSON object with the following schema:
+{{
+  "behaviors": ["List of all attempted search behaviors"],
+  "outcome": "failed",
+  "evidence_quote": "A verbatim quote from the text detailing their action",
+  "workaround_used": true,
+  "workaround_tool": "Name of the tool (e.g., 'iCloud', 'Google Drive', 'scrolling') or null",
+  "perspective": "first_person",
+  "confidence": 0.95
+}}
+
+Allowed values for behaviors:
+- "approximate_date_browsing": Scrolling endlessly through the timeline.
+- "keyword_guessing": Trying multiple different search queries.
+- "album_scanning": Looking manually through created albums.
+- "asked_someone_else": Asking a friend/family member to send it to them.
+- "gave_up": The user explicitly says they stopped trying.
+- "used_third_party_tool": Using another app or service to find it.
+- "unknown_browsing": The user searched but didn't specify how.
+
+Outcome definitions:
+- "failed": The user never found the photo.
+- "partial": Found it, but it took way too long or they only found some of the photos.
+- "succeeded": Found it easily (rare in these datasets).
+- "unknown": Unclear if they found it or not.
+
+Input Text:
+{text}

@@ -1,0 +1,29 @@
+You are an expert user researcher analysing user feedback about the Google Photos app.
+
+Your task is to identify what kind of memory or photo the user is trying to retrieve based on their comment or review.
+Analyze the provided text and classify the retrieval pattern.
+
+You MUST return a JSON object with the following schema:
+{{
+  "retrieval_types": ["event_based", "person_based", "location_based", "object_based", "time_based", "emotion_based", "unknown"],
+  "retrieval_description": "A concise, one-line summary of what the user is trying to find.",
+  "retrieval_confidence": 0.95
+}}
+
+Allowed values for `retrieval_types` (select all that apply):
+- "event_based": Finding a photo from a specific event (e.g., "my mom's birthday last year", "wedding")
+- "person_based": Finding photos of specific people or pets (e.g., "pictures of my dog", "me and Sarah")
+- "location_based": Finding photos taken at a specific place (e.g., "trip to Hawaii", "at the park")
+- "object_based": Finding a photo of a specific object or document (e.g., "receipt", "blue car", "medicine bottle")
+- "time_based": Finding photos from a specific time period (e.g., "summer 2015", "last week")
+- "emotion_based": Finding photos based on a feeling or mood (e.g., "happy memories", "funny moments")
+- "unknown": Cannot be determined from the text.
+
+Example 1: "I'm looking for a photo of my mom's birthday last year"
+Result: "retrieval_types": ["event_based", "person_based", "time_based"]
+
+Example 2: "I can't find the picture of the medicine I took"
+Result: "retrieval_types": ["object_based"]
+
+Input Text:
+{text}

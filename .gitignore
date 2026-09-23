@@ -1,0 +1,33 @@
+# ── Secrets — NEVER COMMIT ───────────────────────────────────
+.env
+**/.env
+*.env
+.env.*
+!.env.example
+
+# ── Virtual Environments ──────────────────────────────────────
+.venv/
+**/.venv/
+venv/
+env/
+
+# ── Python bytecode & cache ───────────────────────────────────
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+.pytest_cache/
+**/.pytest_cache/
+
+# ── Large archives & temporary dumps ──────────────────────────
+*.zip
+data/raw/
+data/processed/
+
+# ── IDE & OS ──────────────────────────────────────────────────
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

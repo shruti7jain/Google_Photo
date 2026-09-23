@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Google Photos - Search Discovery Engine</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+    }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-primary-fixed": "#001847",
+            "on-error-container": "#93000a",
+            "secondary-fixed-dim": "#96cbff",
+            "secondary-container": "#7ec1ff",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "on-primary-container": "#ced9ff",
+            "on-tertiary": "#ffffff",
+            "on-secondary": "#ffffff",
+            "primary-fixed-dim": "#b2c5ff",
+            "surface-container-lowest": "#ffffff",
+            "surface-tint": "#0856cf",
+            "surface": "#f8faf7",
+            "surface-variant": "#e1e3e0",
+            "tertiary-fixed-dim": "#73dc82",
+            "on-tertiary-container": "#002108",
+            "on-primary-fixed-variant": "#0040a1",
+            "surface-dim": "#d8dbd8",
+            "surface-container": "#eceeec",
+            "outline": "#737785",
+            "surface-container-low": "#f2f4f1",
+            "on-background": "#191c1b",
+            "primary-container": "#0b57d0",
+            "primary": "#0041a2",
+            "inverse-primary": "#b2c5ff",
+            "secondary": "#00639b",
+            "background": "#f8faf7",
+            "on-tertiary-fixed": "#002108",
+            "surface-bright": "#f8faf7",
+            "on-secondary-container": "#004f7d",
+            "surface-container-highest": "#e1e3e0",
+            "tertiary": "#00541e",
+            "inverse-surface": "#2e3130",
+            "error": "#ba1a1a",
+            "tertiary-fixed": "#8ffa9b",
+            "surface-container-high": "#e7e9e6",
+            "tertiary-container": "#c8f8cd",
+            "primary-fixed": "#dae2ff",
+            "secondary-fixed": "#cee5ff",
+            "on-secondary-fixed": "#001d33",
+            "on-tertiary-fixed-variant": "#00531e",
+            "outline-variant": "#c3c6d6",
+            "on-surface": "#191c1b",
+            "on-secondary-fixed-variant": "#004a76",
+            "inverse-on-surface": "#eff1ef",
+            "on-surface-variant": "#424654",
+            "on-primary": "#ffffff"
+          },
+          fontFamily: {
+            "body-md": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "title-sm": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased">
+
+<!-- Header Bar -->
+<header class="fixed top-0 left-0 right-0 h-16 z-50 bg-surface/95 backdrop-blur-md shadow-xs border-b border-outline-variant/30">
+  <div class="h-16 w-full px-4 lg:px-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <!-- Official Google Photos Logo -->
+      <img alt="Google Photos Logo" class="h-8 w-auto object-contain" src="https://1000logos.net/wp-content/uploads/2020/05/Google-Photos-logo.png"/>
+      <span class="font-title-md text-title-md text-on-surface tracking-tight font-bold">Google Photos</span>
+      <div class="h-5 w-px bg-outline-variant/60 mx-1"></div>
+      <span class="font-title-md text-title-md text-primary font-semibold">Search Discovery Engine</span>
+      <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm border border-outline-variant/40">Internal / Reviewer View</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 bg-primary-fixed/30 px-3 py-1 rounded-full border border-primary/20">
+        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        <span class="font-label-sm text-label-sm font-semibold text-primary">Focused on Photo Search Friction</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Left Sidebar Navigation -->
+<aside class="fixed left-0 top-16 bottom-0 w-64 bg-surface-container-low z-40 flex flex-col justify-between border-r border-outline-variant/30">
+  <div class="flex flex-col flex-1 overflow-y-auto px-3 py-4">
+    <div class="px-3 mb-2">
+      <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-bold">Navigation</p>
+    </div>
+    <nav class="flex flex-col gap-1">
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-full bg-primary-container text-on-primary font-title-sm shadow-xs" href="#overview">
+        <span class="material-symbols-outlined text-[20px]">analytics</span>
+        <span class="font-label-lg text-label-lg">Search Insights</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" href="#topBreakReasons">
+        <span class="material-symbols-outlined text-[20px]">error_med</span>
+        <span class="font-label-lg text-label-lg">Top 5 Break Reasons</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" href="#aiReviewSummarizer">
+        <span class="material-symbols-outlined text-[20px]">psychology</span>
+        <span class="font-label-lg text-label-lg">AI Review Summarizer</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" href="#rawReviews">
+        <span class="material-symbols-outlined text-[20px]">rate_review</span>
+        <span class="font-label-lg text-label-lg">As-Is Raw Reviews</span>
+      </a>
+    </nav>
+  </div>
+  
+  <div class="p-4 bg-surface-container-high/60 m-2 rounded-2xl flex flex-col gap-2 border border-outline-variant/30">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary text-[20px]">troubleshoot</span>
+      <span class="font-label-sm text-label-sm text-on-surface font-semibold">Focus Scope</span>
+    </div>
+    <p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">
+      Filtered specifically for photo search failure points, missing query filters & bad user experiences.
+    </p>
+  </div>
+</aside>
+
+<!-- Main Container Area -->
+<div class="pl-64">
+  <main class="relative w-full pt-20 px-6 pb-12 bg-surface min-h-screen">
+    <div class="flex flex-col w-full max-w-7xl mx-auto gap-8">
+
+      <!-- Page Banner -->
+      <section id="overview" class="flex flex-col gap-2">
+        <div class="flex items-center gap-2">
+          <h1 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">Photo Search Pain Points & Review Analysis</h1>
+          <span class="px-3 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">56% Complaint Share</span>
+        </div>
+        <p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+          Synthesized from 2,714 verbatim photo search reviews collected across Play Store, App Store, and Reddit. Non-search noise (backup, storage quota, editing) has been filtered out.
+        </p>
+      </section>
+
+      <!-- KPI Metrics Row (Collection & Cleaning Metrics) -->
+      <section class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4">
+        <!-- Card 1: Raw Data Collected -->
+        <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-xs border border-outline-variant/30 flex flex-col justify-between">
+          <div class="flex items-start justify-between">
+            <div>
+              <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Raw Reviews Ingested</span>
+              <p class="font-display-lg text-display-lg font-bold text-on-surface mt-1">{{ total_raw }}</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary">
+              <span class="material-symbols-outlined text-[22px]">cloud_download</span>
+            </div>
+          </div>
+          <p class="font-label-sm text-label-sm text-on-surface-variant mt-3">Live data from connected sources</p>
+        </div>
+
+        <!-- Card 2: Filtered Photo Search Corpus -->
+        <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-xs border border-primary/20 bg-gradient-to-br from-primary-fixed/10 to-transparent flex flex-col justify-between">
+          <div class="flex items-start justify-between">
+            <div>
+              <span class="font-label-sm text-label-sm text-primary uppercase tracking-wider font-bold">Filtered Search Corpus</span>
+              <p class="font-display-lg text-display-lg font-bold text-on-surface mt-1">{{ total_filtered }}</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined text-[22px]">filter_alt</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 text-tertiary font-label-sm text-label-sm font-semibold mt-3">
+            <span class="material-symbols-outlined text-[14px]">cleaning_services</span>
+            {{ total_raw - total_filtered }} non-search reviews removed (~{% if total_raw > 0 %}{{ "%.0f"|format((total_raw - total_filtered) / total_raw * 100) }}{% else %}0{% endif %}%)
+          </div>
+        </div>
+
+        <!-- Card 3: Photo Search Friction Share -->
+        <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-xs border border-outline-variant/30 flex flex-col justify-between">
+          <div class="flex items-start justify-between">
+            <div>
+              <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Search Failure Rate</span>
+              <p class="font-display-lg text-display-lg font-bold text-error mt-1">{% if total_raw > 0 %}{{ "%.1f"|format(total_filtered / total_raw * 100) }}{% else %}0{% endif %}%</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-on-error-container">
+              <span class="material-symbols-outlined text-[22px]">warning</span>
+            </div>
+          </div>
+          <p class="font-label-sm text-label-sm text-on-surface-variant mt-3">Majority of user complaints cite search breakdown</p>
+        </div>
+      </section>
+
+      <!-- SECTION 1: TOP 5 REASONS PHOTO SEARCH BREAKS DOWN -->
+      <section id="topBreakReasons" class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-error-container text-on-error-container flex items-center justify-center shadow-xs">
+              <span class="material-symbols-outlined text-[22px]">running_with_errors</span>
+            </div>
+            <div>
+              <h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Top 5 Reasons Photo Search Breaks Down</h2>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">The core technical & UX friction points ranked by volume, severity, and user dissatisfaction.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          
+          {% for cluster in clusters %}
+          <div class="bg-surface-container-lowest rounded-2xl p-5 border {% if loop.index == 1 %}border-2 border-primary/40 shadow-sm{% else %}border-outline-variant/30 shadow-xs{% endif %} flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-all">
+            <div class="absolute top-0 left-0 right-0 {% if loop.index == 1 %}h-1.5 bg-primary{% else %}h-1 bg-secondary{% endif %}"></div>
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="w-7 h-7 rounded-full {% if loop.index == 1 %}bg-primary-container text-on-primary{% else %}bg-surface-container-high text-on-surface{% endif %} font-bold text-xs flex items-center justify-center">#{{ loop.index }}</span>
+                <span class="px-2 py-0.5 rounded-full {% if loop.index == 1 %}bg-error-container text-on-error-container{% else %}bg-secondary-fixed text-on-secondary-fixed{% endif %} font-label-sm text-label-sm font-bold">{% if cluster.severity_score > 80 %}Critical{% else %}High{% endif %}</span>
+              </div>
+              <h3 class="font-title-sm text-title-sm font-bold text-on-surface leading-snug">{{ cluster.label }}</h3>
+              <p class="font-body-sm text-body-sm text-on-surface-variant mt-2 leading-relaxed">
+                {{ cluster.summary }}
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-outline-variant/30 flex flex-col gap-1">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-on-surface-variant font-medium">Impact Score:</span>
+                <span class="font-bold {% if loop.index == 1 %}text-primary{% else %}text-secondary{% endif %}">{{ "%.1f"|format(cluster.opportunity_score) }} / 100</span>
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-on-surface-variant font-medium">Volume:</span>
+                <span class="font-semibold text-on-surface">{{ cluster.doc_count }} reviews ({{ cluster.breakdown_share }}% share)</span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+      </section>
+
+      <!-- SECTION 2: AI REVIEW SUMMARIZER CHATBOT (FOR PM / REVIEWER) -->
+      <section id="aiReviewSummarizer" class="bg-surface-container-lowest border border-primary/30 rounded-3xl p-6 shadow-md relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-primary-container/20 via-secondary-container/10 to-transparent pointer-events-none rounded-full blur-3xl"></div>
+
+        <!-- Section Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-outline-variant/30 pb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-on-primary flex items-center justify-center shadow-md">
+              <span class="material-symbols-outlined text-[26px]">psychology</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">AI Search Review Summarizer</h2>
+                <span class="px-2.5 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-label-sm text-label-sm font-semibold flex items-center gap-1">
+                  <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+                  Gemini 1.5 Pro • Reviewer Assistant
+                </span>
+              </div>
+              <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                Single dedicated AI area to ask questions and generate instant syntheses across 2,714 verbatim photo search reviews.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summarizer Console -->
+        <div class="flex flex-col gap-4">
+          <!-- Input Bar -->
+          <div class="relative flex items-center w-full shadow-inner rounded-full bg-surface-container-low border border-outline-variant/40 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+            <span class="material-symbols-outlined absolute left-4 text-primary text-[22px]">auto_awesome</span>
+            <input id="aiChatInput" class="w-full h-12 pl-12 pr-36 rounded-full bg-transparent text-on-surface placeholder:text-on-surface-variant font-body-md text-body-md focus:outline-none" placeholder="Ask AI: e.g. 'Summarize top 3 reasons date search fails'..." type="text" onkeypress="if(event.key==='Enter') triggerAiSynthesis()"/>
+            <button onclick="triggerAiSynthesis()" class="absolute right-2 px-5 h-9 rounded-full bg-primary text-on-primary font-label-md text-label-md font-semibold shadow-sm hover:bg-primary-container transition-all cursor-pointer flex items-center gap-1">
+              <span>Summarize</span>
+              <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </button>
+          </div>
+
+          <!-- Quick Reviewer Presets -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <button onclick="runReviewerPreset('Summarize top 5 search failure points')" class="p-3.5 rounded-2xl bg-surface-container-low hover:bg-primary-fixed/20 border border-outline-variant/30 text-left transition-all group cursor-pointer flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-1">
+                <span class="material-symbols-outlined text-primary text-[20px]">bolt</span>
+                <span class="material-symbols-outlined text-[16px] text-outline opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+              </div>
+              <p class="font-title-sm text-title-sm font-bold text-on-surface">Top 5 Break Reasons</p>
+              <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 line-clamp-2">Synthesize core breakdown points across 2,714 reviews.</p>
+            </button>
+
+            <button onclick="runReviewerPreset('Why does date and timestamp search break?')" class="p-3.5 rounded-2xl bg-surface-container-low hover:bg-primary-fixed/20 border border-outline-variant/30 text-left transition-all group cursor-pointer flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-1">
+                <span class="material-symbols-outlined text-secondary text-[20px]">calendar_month</span>
+                <span class="material-symbols-outlined text-[16px] text-outline opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+              </div>
+              <p class="font-title-sm text-title-sm font-bold text-on-surface">Date/Time Search Breakdown</p>
+              <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 line-clamp-2">Why searching specific dates or 3 PM fails.</p>
+            </button>
+
+            <button onclick="runReviewerPreset('Show verbatim App Store quotes on search')" class="p-3.5 rounded-2xl bg-surface-container-low hover:bg-primary-fixed/20 border border-outline-variant/30 text-left transition-all group cursor-pointer flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-1">
+                <span class="material-symbols-outlined text-error text-[20px]">format_quote</span>
+                <span class="material-symbols-outlined text-[16px] text-outline opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+              </div>
+              <p class="font-title-sm text-title-sm font-bold text-on-surface">Verbatim As-Is Evidence</p>
+              <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 line-clamp-2">Direct raw quotes from Play Store & App Store.</p>
+            </button>
+
+            <button onclick="runReviewerPreset('Explain vocabulary mismatch gap')" class="p-3.5 rounded-2xl bg-surface-container-low hover:bg-primary-fixed/20 border border-outline-variant/30 text-left transition-all group cursor-pointer flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-1">
+                <span class="material-symbols-outlined text-tertiary text-[20px]">translate</span>
+                <span class="material-symbols-outlined text-[16px] text-outline opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+              </div>
+              <p class="font-title-sm text-title-sm font-bold text-on-surface">Vocabulary Gap Analysis</p>
+              <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 line-clamp-2">What users type vs. what vision tags detect.</p>
+            </button>
+          </div>
+
+          <!-- AI Output Response Console -->
+          <div class="mt-2 p-5 rounded-2xl bg-surface-container-low/80 border border-outline-variant/30 flex flex-col gap-3 shadow-inner">
+            <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[22px]">smart_toy</span>
+                <span id="aiConsoleHeading" class="font-title-sm text-title-sm font-bold text-on-surface">AI Summarizer Output</span>
+              </div>
+              <span class="font-label-sm text-label-sm text-on-surface-variant">Live Corpus: 2,714 Search Reviews</span>
+            </div>
+            <div id="aiConsoleBody" class="font-body-sm text-body-sm text-on-surface leading-relaxed min-h-[80px]">
+              💡 <strong>Reviewer Assistant Ready:</strong> Click any prompt shortcut above or type a question to summarize verbatim user feedback regarding photo search pain points.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: RAW USER REVIEWS (AS-IS PHOTO SEARCH COMPLAINTS ONLY) -->
+      <section id="rawReviews" class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-xs flex flex-col gap-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-primary-fixed text-on-primary-fixed flex items-center justify-center shadow-xs">
+              <span class="material-symbols-outlined text-[22px]">rate_review</span>
+            </div>
+            <div>
+              <h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">As-Is Raw User Reviews</h2>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">Unedited, verbatim user complaints reflecting photo search pain points and bad experiences.</p>
+            </div>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">
+            Showing {{ reviews|length }} Verbatim Reviews
+          </span>
+        </div>
+
+        <!-- Search Bar and Filter Chips -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-surface-container-low/50 p-4 rounded-2xl border border-outline-variant/30">
+          <!-- Keyword Filter -->
+          <div class="relative w-full lg:max-w-md">
+            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+            <input id="reviewSearchInput" oninput="filterRawReviews()" class="w-full h-10 pl-11 pr-4 rounded-full bg-surface-container-lowest text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm border border-outline-variant/40 focus:outline-none focus:ring-2 focus:ring-primary transition-all" placeholder="Search verbatim reviews by keyword (e.g., date, album, faces)..." type="text"/>
+          </div>
+
+          <!-- Platform & Pain Point Category Chips -->
+          <div class="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
+            <button onclick="setReviewFilter('all', this)" class="review-chip px-3 py-1.5 rounded-full font-label-md text-label-md font-semibold bg-primary-container text-on-primary shadow-xs">
+              All ({{ reviews|length }})
+            </button>
+            <button onclick="setReviewFilter('date', this)" class="review-chip px-3 py-1.5 rounded-full font-label-md text-label-md font-medium bg-surface-container-high hover:bg-surface-variant text-on-surface-variant">
+              Date & Time Search
+            </button>
+            <button onclick="setReviewFilter('face', this)" class="review-chip px-3 py-1.5 rounded-full font-label-md text-label-md font-medium bg-surface-container-high hover:bg-surface-variant text-on-surface-variant">
+              Face Tagging
+            </button>
+            <button onclick="setReviewFilter('album', this)" class="review-chip px-3 py-1.5 rounded-full font-label-md text-label-md font-medium bg-surface-container-high hover:bg-surface-variant text-on-surface-variant">
+              Album Search
+            </button>
+            <button onclick="setReviewFilter('play_store', this)" class="review-chip px-3 py-1.5 rounded-full font-label-md text-label-md font-medium bg-surface-container-high hover:bg-surface-variant text-on-surface-variant">
+              Play Store
+            </button>
+            <button onclick="setReviewFilter('app_store', this)" class="review-chip px-3 py-1.5 rounded-full font-label-md text-label-md font-medium bg-surface-container-high hover:bg-surface-variant text-on-surface-variant">
+              App Store
+            </button>
+          </div>
+        </div>
+
+        <!-- Raw Review Cards Grid -->
+        <div id="reviewsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+          {% for review in reviews %}
+          <div class="review-card bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/30 flex flex-col justify-between gap-3 shadow-xs hover:border-primary/40 transition-all" data-category="{{ review.source | lower }} {% if 'date' in review.text.lower() or 'time' in review.text.lower() %}date{% endif %} {% if 'face' in review.text.lower() or 'person' in review.text.lower() or 'people' in review.text.lower() %}face{% endif %} {% if 'album' in review.text.lower() %}album{% endif %}">
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1 text-amber-500">
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                  <span class="font-label-sm text-label-sm font-bold text-on-surface">{{ "%.0f"|format(review.rating) if review.rating else "5" }}</span>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full {% if review.source == 'app_store' %}bg-primary-container text-on-primary{% else %}bg-secondary-fixed text-on-secondary-fixed{% endif %} font-label-sm text-label-sm font-semibold capitalize">
+                  {{ 'App Store' if review.source == 'app_store' else 'Play Store' }}
+                </span>
+              </div>
+              <p class="font-body-sm text-body-sm text-on-surface italic leading-relaxed">
+                "{{ review.text }}"
+              </p>
+            </div>
+            <div class="pt-3 border-t border-outline-variant/20 flex items-center justify-between text-xs text-on-surface-variant">
+              <span class="font-medium">{{ review.date.strftime('%Y-%m-%d') if review.date else 'Verified Store Review' }}</span>
+              <span class="px-2 py-0.5 rounded bg-surface-container-high font-semibold">Verbatim User Complaint</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- Dynamic Interactivity JavaScript -->
+<script>
+  function runReviewerPreset(promptText) {
+    const input = document.getElementById('aiChatInput');
+    input.value = promptText;
+    triggerAiSynthesis();
+  }
+
+  function triggerAiSynthesis() {
+    const input = document.getElementById('aiChatInput');
+    const query = input.value.trim();
+    if (!query) return;
+
+    const consoleBody = document.getElementById('aiConsoleBody');
+    const consoleHeading = document.getElementById('aiConsoleHeading');
+
+    consoleHeading.innerText = `AI Reviewer Synthesis: "${query}"`;
+    consoleBody.innerHTML = `
+      <div class="flex items-center gap-2 text-primary font-medium italic py-2">
+        <span class="material-symbols-outlined text-[20px] animate-spin">auto_awesome</span>
+        Gemini 1.5 Pro is analyzing 2,714 photo search review records...
+      </div>
+    `;
+
+    fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ query: query })
+    })
+    .then(response => response.json())
+    .then(data => {
+      consoleBody.innerHTML = data.response;
+    })
+    .catch(err => {
+      consoleBody.innerHTML = `<div class="text-error font-medium">Error connecting to AI service: ${err.message}</div>`;
+    });
+  }
+
+  function filterRawReviews() {
+    const input = document.getElementById('reviewSearchInput');
+    const query = input.value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.review-card');
+
+    cards.forEach(card => {
+      const text = card.innerText.toLowerCase();
+      if (!query || text.includes(query)) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function setReviewFilter(category, buttonEl) {
+    const chips = document.querySelectorAll('.review-chip');
+    chips.forEach(c => {
+      c.classList.remove('bg-primary-container', 'text-on-primary', 'shadow-xs');
+      c.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+    });
+
+    buttonEl.classList.add('bg-primary-container', 'text-on-primary', 'shadow-xs');
+    buttonEl.classList.remove('bg-surface-container-high', 'text-on-surface-variant');
+
+    const cards = document.querySelectorAll('.review-card');
+    cards.forEach(card => {
+      const cardCats = (card.getAttribute('data-category') || '').toLowerCase();
+      if (category === 'all' || cardCats.includes(category.toLowerCase())) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
