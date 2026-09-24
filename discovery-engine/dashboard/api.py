@@ -20,8 +20,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Using the full path since we run uvicorn from the root
-templates = Jinja2Templates(directory="dashboard/templates")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 db_url = os.getenv("DATABASE_URL")
 engine = create_engine(db_url)
