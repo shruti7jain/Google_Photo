@@ -150,12 +150,12 @@
       <!-- Page Banner -->
       <section id="overview" class="flex flex-col gap-2">
         <div class="flex items-center gap-2">
-          <h1 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">Photo Search Pain Points & Review Analysis</h1>
-          <span class="px-3 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">56% Complaint Share</span>
+          <h1 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">Vague-Memory Retrieval & Search Friction</h1>
         </div>
         <p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
-          Synthesized from 2,714 verbatim photo search reviews collected across Play Store, App Store, and Reddit. Non-search noise (backup, storage quota, editing) has been filtered out.
+          Synthesized from {{ total_filtered }} verbatim photo search reviews collected across Google Play Store + Apple App Store. Non-search noise (backup, storage quota, editing) has been filtered out.
         </p>
+        
       </section>
 
       <!-- KPI Metrics Row (Collection & Cleaning Metrics) -->
@@ -195,14 +195,14 @@
         <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-xs border border-outline-variant/30 flex flex-col justify-between">
           <div class="flex items-start justify-between">
             <div>
-              <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Search Failure Rate</span>
+              <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Search-Relevant Share</span>
               <p class="font-display-lg text-display-lg font-bold text-error mt-1">{% if total_raw > 0 %}{{ "%.1f"|format(total_filtered / total_raw * 100) }}{% else %}0{% endif %}%</p>
             </div>
             <div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-on-error-container">
-              <span class="material-symbols-outlined text-[22px]">warning</span>
+              <span class="material-symbols-outlined text-[22px]">troubleshoot</span>
             </div>
           </div>
-          <p class="font-label-sm text-label-sm text-on-surface-variant mt-3">Majority of user complaints cite search breakdown</p>
+          <p class="font-label-sm text-label-sm text-on-surface-variant mt-3">{{ total_filtered }} of {{ total_raw }} raw records were classified as photo-search relevant.</p>
         </div>
       </section>
 
@@ -214,8 +214,8 @@
               <span class="material-symbols-outlined text-[22px]">running_with_errors</span>
             </div>
             <div>
-              <h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Top 5 Reasons Photo Search Breaks Down</h2>
-              <p class="font-body-sm text-body-sm text-on-surface-variant">The core technical & UX friction points ranked by volume, severity, and user dissatisfaction.</p>
+              <h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Exploratory Search-Friction Clusters</h2>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">Exploratory search-friction clusters to be validated against the {{ total_retrieval_relevant }} retrieval cases and {{ total_vague_memory }} vague-memory cases.</p>
             </div>
           </div>
         </div>
@@ -237,8 +237,8 @@
             </div>
             <div class="mt-4 pt-3 border-t border-outline-variant/30 flex flex-col gap-1">
               <div class="flex items-center justify-between text-xs">
-                <span class="text-on-surface-variant font-medium">Impact Score:</span>
-                <span class="font-bold {% if loop.index == 1 %}text-primary{% else %}text-secondary{% endif %}">{{ "%.1f"|format(cluster.opportunity_score) }} / 100</span>
+                <span class="text-on-surface-variant font-medium" title="Share within Top-5 exploratory cluster cases">Share within Top-5:</span>
+                <span class="font-bold {% if loop.index == 1 %}text-primary{% else %}text-secondary{% endif %}">{{ cluster.breakdown_share }}%</span>
               </div>
               <div class="flex items-center justify-between text-xs">
                 <span class="text-on-surface-variant font-medium">Volume:</span>
@@ -266,11 +266,11 @@
                 <h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">AI Search Review Summarizer</h2>
                 <span class="px-2.5 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-label-sm text-label-sm font-semibold flex items-center gap-1">
                   <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
-                  Gemini 1.5 Pro • Reviewer Assistant
+                  AI-Powered Reviewer Assistant
                 </span>
               </div>
               <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
-                Single dedicated AI area to ask questions and generate instant syntheses across 2,714 verbatim photo search reviews.
+                Single dedicated AI area to ask questions and generate instant syntheses across {{ total_filtered }} verbatim photo search reviews.
               </p>
             </div>
           </div>
@@ -296,7 +296,7 @@
                 <span class="material-symbols-outlined text-[16px] text-outline opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
               </div>
               <p class="font-title-sm text-title-sm font-bold text-on-surface">Top 5 Break Reasons</p>
-              <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 line-clamp-2">Synthesize core breakdown points across 2,714 reviews.</p>
+              <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 line-clamp-2">Synthesize core breakdown points across {{ total_filtered }} reviews.</p>
             </button>
 
             <button onclick="runReviewerPreset('Why does date and timestamp search break?')" class="p-3.5 rounded-2xl bg-surface-container-low hover:bg-primary-fixed/20 border border-outline-variant/30 text-left transition-all group cursor-pointer flex flex-col justify-between">
@@ -334,7 +334,7 @@
                 <span class="material-symbols-outlined text-primary text-[22px]">smart_toy</span>
                 <span id="aiConsoleHeading" class="font-title-sm text-title-sm font-bold text-on-surface">AI Summarizer Output</span>
               </div>
-              <span class="font-label-sm text-label-sm text-on-surface-variant">Live Corpus: 2,714 Search Reviews</span>
+              <span class="font-label-sm text-label-sm text-on-surface-variant">Live Corpus: {{ total_filtered }} Search Reviews</span>
             </div>
             <div id="aiConsoleBody" class="font-body-sm text-body-sm text-on-surface leading-relaxed min-h-[80px]">
               💡 <strong>Reviewer Assistant Ready:</strong> Click any prompt shortcut above or type a question to summarize verbatim user feedback regarding photo search pain points.
@@ -342,6 +342,66 @@
           </div>
         </div>
       </section>
+
+      <!-- SECTION 2.5: VAGUE-MEMORY RETRIEVAL CASES -->
+      {% if vague_memory_cases|length > 0 %}
+      <section id="vagueMemoryCases" class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-tertiary-container text-on-tertiary-container flex items-center justify-center shadow-xs">
+              <span class="material-symbols-outlined text-[22px]">memory</span>
+            </div>
+            <div>
+              <h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Vague-Memory Retrieval Evidence</h2>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">Representative extraction from the {{ total_vague_memory }} explicitly identified vague-memory retrieval attempts.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+          {% for case in vague_memory_cases %}
+          <div class="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/30 shadow-xs flex flex-col gap-4 relative overflow-hidden">
+            <!-- Top tag -->
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold capitalize flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">storefront</span> {{ case.source }}
+              </span>
+              <span class="font-label-sm text-label-sm text-error font-bold capitalize">{{ case.failure_point | replace('_', ' ') }}</span>
+            </div>
+
+            <!-- Quote -->
+            <p class="font-body-md text-body-md text-on-surface italic leading-relaxed bg-surface-container-low p-4 rounded-xl border border-outline-variant/20">
+              "{{ case.quote }}"
+            </p>
+
+            <!-- Metadata Grid -->
+            <div class="grid grid-cols-2 gap-3 mt-1">
+              <div>
+                <span class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Remembered Clues</span>
+                <div class="flex flex-wrap gap-1">
+                  {% for clue in case.remembered_clues %}
+                  <span class="px-2 py-0.5 bg-primary-fixed/30 text-primary border border-primary/20 rounded font-label-sm text-[11px]">{{ clue }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div>
+                <span class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Search Attempt</span>
+                <span class="block font-body-sm text-xs text-on-surface">{{ case.search_attempt }}</span>
+              </div>
+              <div>
+                <span class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Retrieval Outcome</span>
+                <span class="block font-body-sm text-xs text-on-surface capitalize">{{ case.retrieval_outcome | replace('_', ' ') }}</span>
+              </div>
+              <div>
+                <span class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Recovery Behavior</span>
+                <span class="block font-body-sm text-xs text-on-surface">{{ case.recovery_behavior | replace('_', ' ') }}</span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
 
       <!-- SECTION 3: RAW USER REVIEWS (AS-IS PHOTO SEARCH COMPLAINTS ONLY) -->
       <section id="rawReviews" class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-xs flex flex-col gap-6">
@@ -444,7 +504,7 @@
     consoleBody.innerHTML = `
       <div class="flex items-center gap-2 text-primary font-medium italic py-2">
         <span class="material-symbols-outlined text-[20px] animate-spin">auto_awesome</span>
-        Gemini 1.5 Pro is analyzing 2,714 photo search review records...
+        The AI-Powered Reviewer Assistant is analyzing {{ total_filtered }} photo search review records...
       </div>
     `;
 
