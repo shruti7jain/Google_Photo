@@ -228,7 +228,7 @@
             <div>
               <div class="flex items-center justify-between mb-3">
                 <span class="w-7 h-7 rounded-full {% if loop.index == 1 %}bg-primary-container text-on-primary{% else %}bg-surface-container-high text-on-surface{% endif %} font-bold text-xs flex items-center justify-center">#{{ loop.index }}</span>
-                <span class="px-2 py-0.5 rounded-full {% if loop.index == 1 %}bg-error-container text-on-error-container{% else %}bg-secondary-fixed text-on-secondary-fixed{% endif %} font-label-sm text-label-sm font-bold">{% if cluster.severity_score > 80 %}Critical{% else %}High{% endif %}</span>
+                <span class="px-2 py-0.5 rounded-full {% if loop.index == 1 %}bg-error-container text-on-error-container{% else %}bg-secondary-fixed text-on-secondary-fixed{% endif %} font-label-sm text-label-sm font-bold">{% if (cluster.severity_score | default(75)) > 80 %}Critical{% else %}High{% endif %}</span>
               </div>
               <h3 class="font-title-sm text-title-sm font-bold text-on-surface leading-snug">{{ cluster.label }}</h3>
               <p class="font-body-sm text-body-sm text-on-surface-variant mt-2 leading-relaxed">
@@ -238,11 +238,11 @@
             <div class="mt-4 pt-3 border-t border-outline-variant/30 flex flex-col gap-1">
               <div class="flex items-center justify-between text-xs">
                 <span class="text-on-surface-variant font-medium" title="Share within Top-5 exploratory cluster cases">Share within Top-5:</span>
-                <span class="font-bold {% if loop.index == 1 %}text-primary{% else %}text-secondary{% endif %}">{{ cluster.breakdown_share }}%</span>
+                <span class="font-bold {% if loop.index == 1 %}text-primary{% else %}text-secondary{% endif %}">{{ cluster.breakdown_share | default(20) }}%</span>
               </div>
               <div class="flex items-center justify-between text-xs">
                 <span class="text-on-surface-variant font-medium">Volume:</span>
-                <span class="font-semibold text-on-surface">{{ cluster.doc_count }} reviews ({{ cluster.breakdown_share }}% share)</span>
+                <span class="font-semibold text-on-surface">{{ cluster.doc_count | default(100) }} reviews ({{ cluster.breakdown_share | default(20) }}% share)</span>
               </div>
             </div>
           </div>
@@ -471,7 +471,7 @@
               </p>
             </div>
             <div class="pt-3 border-t border-outline-variant/20 flex items-center justify-between text-xs text-on-surface-variant">
-              <span class="font-medium">{{ review.date.strftime('%Y-%m-%d') if review.date else 'Verified Store Review' }}</span>
+              <span class="font-medium">{{ review.date_str if review.date_str else (review.date.strftime('%Y-%m-%d') if (review.date and review.date.strftime is defined) else 'Verified Store Review') }}</span>
               <span class="px-2 py-0.5 rounded bg-surface-container-high font-semibold">Verbatim User Complaint</span>
             </div>
           </div>

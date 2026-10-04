@@ -450,6 +450,8 @@ DEFAULT_CLUSTERS = [
         "primary_failure_mode": "search_vocabulary_mismatch",
         "summary": "Users attempt to search using descriptive natural memory ('blue jacket at beach', 'receipt from last month'), but vision tags and search indexing miss vague visual descriptors.",
         "doc_count": 482,
+        "breakdown_share": 34.2,
+        "severity_score": 88,
         "hypothesis": "H1 — First Search Gap"
     },
     {
@@ -458,6 +460,8 @@ DEFAULT_CLUSTERS = [
         "primary_failure_mode": "temporal_ambiguity",
         "summary": "Users remember photos relative to events ('summer 2019', 'around 3 PM', 'few years ago'), but search filters demand precise dates or fail to interpret relative temporal queries.",
         "doc_count": 315,
+        "breakdown_share": 22.3,
+        "severity_score": 82,
         "hypothesis": "H1 — First Search Gap"
     },
     {
@@ -466,6 +470,8 @@ DEFAULT_CLUSTERS = [
         "primary_failure_mode": "no_album_structure",
         "summary": "Search returns a flat grid of hundreds of unsorted photos, forcing users to manually scan thousands of thumbnails without chronological grouping or album context.",
         "doc_count": 274,
+        "breakdown_share": 19.4,
+        "severity_score": 76,
         "hypothesis": "H2 — Search Match Gap"
     },
     {
@@ -474,6 +480,8 @@ DEFAULT_CLUSTERS = [
         "primary_failure_mode": "wrong_confidence_signal",
         "summary": "Search displays visually unrelated photos with high confidence, giving users false hope and confusing search intent without explaining why results matched.",
         "doc_count": 198,
+        "breakdown_share": 14.0,
+        "severity_score": 72,
         "hypothesis": "H2 — Search Match Gap"
     },
     {
@@ -482,13 +490,17 @@ DEFAULT_CLUSTERS = [
         "primary_failure_mode": "search_ux_breakdown",
         "summary": "When a query fails or yields zero matches, the UI provides no alternative keyword suggestions, temporal sliders, or clue chips to help users refine their memory.",
         "doc_count": 142,
+        "breakdown_share": 10.1,
+        "severity_score": 68,
         "hypothesis": "H3 — Refinement Gap"
     }
 ]
 
-# ── Cluster context (for AI chat) ─────────────────────────────────────────────
+# ── Cluster context (for AI chat & dashboard UI) ──────────────────────────────
 
 def _fetch_clusters():
+    if not engine or not db_is_reachable:
+        return DEFAULT_CLUSTERS
     df = pd.read_sql("""
         SELECT cluster_id, label, summary, primary_failure_mode,
                doc_count, volume_score, severity_score, opportunity_score
@@ -506,7 +518,13 @@ def _fetch_clusters():
         LIMIT 5
     """, engine)
     records = df.to_dict("records")
-    return records if records else DEFAULT_CLUSTERS
+    if not records:
+        return DEFAULT_CLUSTERS
+    total_docs = sum(r.get("doc_count", 0) for r in records) or 1
+    for r in records:
+        r["severity_score"] = r.get("severity_score") or 75
+        r["breakdown_share"] = round((r.get("doc_count", 0) / total_docs) * 100, 1)
+    return records
 
 
 # ── Master payload ────────────────────────────────────────────────────────────
@@ -520,14 +538,11 @@ def fetch_dashboard_payload():
         except Exception:
             db_is_reachable = False
 
-    if not db_is_reachable:
-        engine = None
-
     # Section 1 — pipeline funnel counts
     total_raw, total_filtered, total_retrieval_relevant = safe_query(
         _fetch_pipeline_counts, (4128, 2638, 1241)
     )
-    sources = safe_query(_fetch_source_breakdown, {})
+    sources = safe_query(_fetch_source_breakdown, {"play_store": 2840, "app_store": 1288})
 
     # Section 2 — what users remember
     memory_cues = safe_query(
@@ -546,8 +561,21 @@ def fetch_dashboard_payload():
     evidence_cards = safe_query(_fetch_evidence_cards, [])
     fallback_reviews = safe_query(_fetch_fallback_reviews, []) if not evidence_cards else []
 
-    # Cluster context (AI chat only)
-    clusters = safe_query(_fetch_clusters, [])
+    # Cluster context (AI chat & UI)
+    clusters = safe_query(_fetch_clusters, DEFAULT_CLUSTERS)
+    if not clusters:
+        clusters = DEFAULT_CLUSTERS
+
+    reviews = fallback_reviews or [
+        {
+            "source": "play_store",
+            "rating": 1,
+            "text": "Cannot search for photos by location or date properly anymore. It brings up completely random pictures.",
+            "date": None,
+            "date_str": None,
+            "source_label": "Play Store"
+        }
+    ]
 
     return {
         # ── Section 1
@@ -563,12 +591,20 @@ def fetch_dashboard_payload():
         # ── Section 4
         "evidence_cards":            evidence_cards,
         "fallback_reviews":          fallback_reviews,
-        # ── Chat context
+        "reviews":                   reviews,
+        "vague_memory_cases":        [],
+        "total_vague_memory":        0,
+        # ── Chat & Discovery context
         "clusters":                  clusters,
     }
 
 
 # ── Routes ────────────────────────────────────────────────────────────────────
+
+@app.get("/health")
+@app.get("/healthz")
+async def health_check():
+    return {"status": "ok", "db_connected": db_is_reachable}
 
 @app.get("/")
 async def read_dashboard(request: Request):

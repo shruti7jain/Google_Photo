@@ -443,7 +443,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadDashboard() {
-  const api = window.API_BASE_URL || "http://localhost:8000";
+  const api = window.API_BASE_URL !== undefined ? window.API_BASE_URL : (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:8000" : "");
   fetch(`${api}/api/dashboard-data`)
     .then(r => r.json())
     .then(data => {
@@ -883,7 +883,7 @@ function sendChat() {
     </div>
   `;
 
-  const api = window.API_BASE_URL || "http://localhost:8000";
+  const api = window.API_BASE_URL !== undefined ? window.API_BASE_URL : (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:8000" : "");
   fetch(`${api}/api/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
