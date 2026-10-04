@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Iterator
 import pytz
 
-from app_store_scraper import AppStore
 from loguru import logger
 
 from ingestion.base import SourceConnector
