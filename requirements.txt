@@ -18,6 +18,7 @@ numpy
 
 # ── Database & Storage ───────────────────────────────────────────
 psycopg2-binary
+psycopg[binary]
 pgvector
 sqlalchemy
 
