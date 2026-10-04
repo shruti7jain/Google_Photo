@@ -52,12 +52,15 @@
 
     <!-- Logo -->
     <div class="flex items-center gap-3 px-2 pt-1">
-      <div class="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center shadow-sm">
-        <span class="material-symbols-outlined text-[20px]">travel_explore</span>
-      </div>
+      <svg class="w-8 h-8 shrink-0" viewBox="0 0 59 59" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Google Photos">
+        <path d="M14.75 13.41c8.146 0 14.75 6.603 14.75 14.75v1.34H1.34C.6 29.5 0 28.9 0 28.16c0-8.147 6.604-14.75 14.75-14.75z" fill="#FBBC04"/>
+        <path d="M45.59 14.75c0 8.146-6.603 14.75-14.75 14.75H29.5V1.34C29.5.6 30.1 0 30.84 0c8.147 0 14.75 6.604 14.75 14.75z" fill="#EA4335"/>
+        <path d="M44.25 45.59c-8.146 0-14.75-6.603-14.75-14.75V29.5h28.16c.74 0 1.34.6 1.34 1.34 0 8.147-6.604 14.75-14.75 14.75z" fill="#4285F4"/>
+        <path d="M13.41 44.25c0-8.146 6.603-14.75 14.75-14.75h1.34v28.16c0 .74-.6 1.34-1.34 1.34-8.147 0-14.75-6.604-14.75-14.75z" fill="#34A853"/>
+      </svg>
       <div>
-        <p class="font-bold text-sm text-on-surface leading-tight">Google Photos</p>
-        <p class="text-[11px] text-on-surface-variant leading-tight">Discovery Engine</p>
+        <p class="font-bold text-sm text-on-surface leading-tight tracking-tight">Google Photos</p>
+        <p class="text-[11px] text-on-surface-variant font-medium leading-tight">Discovery Engine</p>
       </div>
     </div>
 
@@ -222,7 +225,7 @@
         </h2>
         <p class="text-xs text-on-surface-variant">Ranked categories based on actual public-feedback data (Denominator: 1,241 retrieval cases)</p>
       </div>
-      <span class="chip bg-secondary-fixed text-on-secondary-fixed text-[10px] font-semibold">Public feedback — secondary research</span>
+      <span class="chip bg-secondary-fixed text-on-secondary-fixed text-[10px] font-semibold">Secondary research — public feedback (n=1,241; multi-label)</span>
     </div>
 
     <!-- Table container -->
@@ -236,8 +239,8 @@
       <div id="memory-cues-rows" class="divide-y divide-outline-variant/15">
         <!-- Rendered by JS -->
       </div>
-      <div class="p-2.5 bg-surface-container-low border-t border-outline-variant/20 text-[10px] text-outline flex items-center justify-between">
-        <span>Denominator: 1,241 retrieval-relevant cases. Multi-label extraction (categories co-occur).</span>
+      <div class="p-2.5 bg-surface-container-low border-t border-outline-variant/20 text-[10px] text-outline flex items-center justify-between flex-wrap gap-2">
+        <span>Denominator: 1,241 retrieval-relevant public cases. Multi-label extraction (categories can co-occur, sums to >100%).</span>
         <span class="font-semibold text-on-surface-variant">Ranked strictly by public feedback volume</span>
       </div>
     </div>
@@ -253,7 +256,7 @@
         </h2>
         <p class="text-xs text-on-surface-variant">Ranked retrieval problems based on actual public-feedback data (Denominator: 1,241 retrieval cases)</p>
       </div>
-      <span class="chip bg-error-container text-on-error-container text-[10px] font-semibold">Retrieval friction observed in public feedback</span>
+      <span class="chip bg-error-container text-on-error-container text-[10px] font-semibold">Secondary research — Mutually exclusive failure modes (n=1,241)</span>
     </div>
 
     <!-- Problems container -->
@@ -267,8 +270,8 @@
       <div id="retrieval-problems-rows" class="divide-y divide-outline-variant/15">
         <!-- Rendered by JS -->
       </div>
-      <div class="p-2.5 bg-surface-container-low border-t border-outline-variant/20 text-[10px] text-outline flex items-center justify-between">
-        <span>Denominator: 1,241 retrieval-relevant cases. Mutually exclusive primary failure mode assignment.</span>
+      <div class="p-2.5 bg-surface-container-low border-t border-outline-variant/20 text-[10px] text-outline flex items-center justify-between flex-wrap gap-2">
+        <span>Denominator: 1,241 retrieval-relevant cases. Mutually exclusive primary failure mode assignment (sums to ~100%).</span>
         <span class="font-semibold text-on-surface-variant">Ranked strictly by public evidence volume</span>
       </div>
     </div>
@@ -354,10 +357,10 @@
       Discovery Takeaway
     </h2>
     <p class="text-sm font-semibold text-on-surface leading-snug">
-      “Public feedback reveals multiple points where photo retrieval can break, from the clues users rely on to what happens when their search does not immediately surface the photo.”
+      “Within the 1,241 retrieval-relevant public records, the most frequently detected memory clues were People (44%), Place / Location (34%), and Roughly When (31%).”
     </p>
     <p class="text-xs text-on-surface-variant leading-relaxed mt-1">
-      Analysis of 4,128 public records (Play Store: 2,418, App Store: 1,124, Reddit: 586) narrowed to 1,241 photo retrieval cases shows that users most often recall <strong>People</strong> (44.0%), <strong>Location</strong> (34.0%), and <strong>Approximate Time</strong> (31.0%) as retrieval anchors. When searching with these clues, retrieval breakdowns cluster into seven observable failure categories, led by <strong>Search Vocabulary Mismatch</strong> (34.5%), <strong>Temporal Ambiguity</strong> (21.0%), and <strong>Unstructured Flat Results</strong> (17.3%).
+      Public feedback reveals multiple points where photo retrieval can break, from the clues users rely on to what happens when their search does not immediately surface the intended photo.
     </p>
   </section>
 
@@ -376,22 +379,32 @@
       <span class="chip bg-primary-fixed text-on-primary-fixed text-[10px] font-semibold">Groq AI Powered</span>
     </div>
 
-    <!-- Preset prompt buttons -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-      <button onclick="runPreset('What are the top reasons natural language photo search fails according to public reviews?')"
-        class="p-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary text-left transition-all">
-        <span class="font-bold text-primary block text-[11px]">Vocabulary Mismatch</span>
-        <span class="text-[10px] text-on-surface-variant">Why do descriptive keywords fail?</span>
+    <!-- Quick prompt buttons -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 text-xs">
+      <button onclick="runPreset('Top 5 retrieval problems?')"
+        class="p-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary text-left transition-all cursor-pointer">
+        <span class="font-bold text-primary block text-[11px]">Top 5 Problems</span>
+        <span class="text-[10px] text-on-surface-variant">Top 5 retrieval problems?</span>
       </button>
-      <button onclick="runPreset('Compare what users remember most: People vs. Place vs. Rough Time in photo retrieval?')"
-        class="p-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary text-left transition-all">
-        <span class="font-bold text-primary block text-[11px]">Memory Clues Breakdown</span>
-        <span class="text-[10px] text-on-surface-variant">Compare People vs. Location vs. Time</span>
+      <button onclick="runPreset('What do users remember most?')"
+        class="p-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary text-left transition-all cursor-pointer">
+        <span class="font-bold text-primary block text-[11px]">Memory Clues</span>
+        <span class="text-[10px] text-on-surface-variant">What do users remember most?</span>
       </button>
-      <button onclick="runPreset('What happens when users search with approximate dates like summer 2019 or last month?')"
-        class="p-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary text-left transition-all">
-        <span class="font-bold text-primary block text-[11px]">Temporal Search Friction</span>
-        <span class="text-[10px] text-on-surface-variant">How does relative date search break?</span>
+      <button onclick="runPreset('Compare memory clues')"
+        class="p-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary text-left transition-all cursor-pointer">
+        <span class="font-bold text-primary block text-[11px]">Compare Clues</span>
+        <span class="text-[10px] text-on-surface-variant">Compare memory clues</span>
+      </button>
+      <button onclick="runPreset('Which retrieval problems have the most evidence?')"
+        class="p-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary text-left transition-all cursor-pointer">
+        <span class="font-bold text-primary block text-[11px]">Most Evidence</span>
+        <span class="text-[10px] text-on-surface-variant">Which problems have most evidence?</span>
+      </button>
+      <button onclick="runPreset('Show evidence for Search Vocabulary Mismatch')"
+        class="p-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary text-left transition-all cursor-pointer">
+        <span class="font-bold text-primary block text-[11px]">Vocabulary Evidence</span>
+        <span class="text-[10px] text-on-surface-variant">Search Vocabulary Mismatch</span>
       </button>
     </div>
 
@@ -425,6 +438,11 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Instant canonical render
+  renderFunnel({ total_raw: 4128, total_filtered: 2638, total_retrieval_relevant: 1241 });
+  renderWhatUsersRemember(null);
+  renderWhereRetrievalBreaks(null);
+
   loadDashboardData();
   setupNavHighlight();
 });
