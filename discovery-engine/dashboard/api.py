@@ -24,7 +24,7 @@ if db_url.startswith("postgres://"):
 elif db_url.startswith("postgresql://") and "+psycopg" not in db_url:
     db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
 
-engine = create_engine(db_url) if db_url else None
+engine = create_engine(db_url, connect_args={"connect_timeout": 3}) if db_url else None
 
 class ChatRequest(BaseModel):
     query: str
