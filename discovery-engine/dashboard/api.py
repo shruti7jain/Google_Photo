@@ -821,6 +821,16 @@ async def read_dashboard(request: Request):
 async def get_dashboard_data():
     return fetch_dashboard_payload()
 
+@app.get("/api/retrieve-live-data")
+@app.post("/api/retrieve-live-data")
+async def retrieve_live_data_endpoint():
+    import datetime
+    payload = fetch_dashboard_payload()
+    now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    payload["retrieved_at"] = now_str
+    payload["is_live"] = True
+    return payload
+
 @app.get("/config.js")
 async def get_config():
     from fastapi.responses import Response
