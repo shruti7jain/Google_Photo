@@ -225,23 +225,23 @@
         </h2>
         <p class="text-xs text-on-surface-variant">Ranked categories based on actual public-feedback data (Denominator: 1,241 retrieval cases)</p>
       </div>
-      <span class="chip bg-secondary-fixed text-on-secondary-fixed text-[10px] font-semibold">Secondary research — public feedback (n=1,241; multi-label)</span>
+      <span class="chip bg-secondary-fixed text-on-secondary-fixed text-[10px] font-semibold">Secondary public feedback · n=1,241 · multi-label</span>
     </div>
 
     <!-- Table container -->
     <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 overflow-hidden shadow-sm">
       <div class="flex items-center gap-4 px-4 py-2 bg-surface-container-low border-b border-outline-variant/20 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
-        <div class="w-40 shrink-0">Category</div>
+        <div class="w-52 shrink-0">Retrieval Memory Clue</div>
         <div class="w-20 text-right shrink-0">Cases</div>
         <div class="w-24 text-right shrink-0">Share</div>
-        <div class="flex-1 ml-2">Relative Volume</div>
+        <div class="flex-1 ml-2">Public Feedback Volume</div>
       </div>
       <div id="memory-cues-rows" class="divide-y divide-outline-variant/15">
         <!-- Rendered by JS -->
       </div>
       <div class="p-2.5 bg-surface-container-low border-t border-outline-variant/20 text-[10px] text-outline flex items-center justify-between flex-wrap gap-2">
-        <span>Denominator: 1,241 retrieval-relevant public cases. Multi-label extraction (categories can co-occur, sums to >100%).</span>
-        <span class="font-semibold text-on-surface-variant">Ranked strictly by public feedback volume</span>
+        <span>Methodology: Secondary public feedback · n=1,241 · multi-label (clues co-occur in search attempts).</span>
+        <span class="font-semibold text-on-surface-variant">Primary research (n=28) presented separately in deck</span>
       </div>
     </div>
   </section>
@@ -534,39 +534,48 @@ function renderWhatUsersRemember(data) {
   const container = document.getElementById("memory-cues-rows");
   const denom = data?.memory_cues?.denominator || 1241;
 
-  // Canonical public-feedback cue distribution sorted descending by actual volume
-  const cues = data?.memory_cues?.cues || [
-    { key: "person_based",   label: "People",             icon: "group",                count: 546, pct: 44.0 },
-    { key: "location_based", label: "Place / Location",    icon: "location_on",          count: 422, pct: 34.0 },
-    { key: "time_based",     label: "Roughly When",        icon: "schedule",             count: 385, pct: 31.0 },
-    { key: "event_based",    label: "Story / Experience",  icon: "auto_stories",         count: 298, pct: 24.0 },
-    { key: "object_based",   label: "Object",              icon: "category",             count: 211, pct: 17.0 },
-    { key: "emotion_based",  label: "Emotion / Feeling",   icon: "sentiment_satisfied",  count: 112, pct: 9.0  },
+  // Canonical public-feedback cue distribution (n=1,241 retrieval cases; multi-label extraction)
+  const cues = [
+    { key: "person_based",   label: "People",             icon: "group",                count: 546, pct: 44.0, role: "Major Retrieval Clue", roleClass: "bg-primary-fixed text-on-primary-fixed font-semibold" },
+    { key: "location_based", label: "Place / Location",    icon: "location_on",          count: 422, pct: 34.0, role: "Major Retrieval Clue", roleClass: "bg-primary-fixed text-on-primary-fixed font-semibold" },
+    { key: "time_based",     label: "Roughly When",        icon: "schedule",             count: 385, pct: 31.0, role: "Temporal Anchor",       roleClass: "bg-surface-container-high text-on-surface-variant" },
+    { key: "event_based",    label: "Story / Experience",  icon: "auto_stories",         count: 298, pct: 24.0, role: "Episodic Story Anchor", roleClass: "bg-secondary-fixed text-on-secondary-fixed font-bold border border-secondary/20" },
+    { key: "object_based",   label: "Object",              icon: "category",             count: 211, pct: 17.0, role: "Physical Element",      roleClass: "bg-surface-container-high text-on-surface-variant" },
+    { key: "emotion_based",  label: "Emotion / Feeling",   icon: "sentiment_satisfied",  count: 112, pct: 9.0,  role: "Atmosphere / Mood",     roleClass: "bg-surface-container-high text-on-surface-variant" },
   ];
 
   cues.sort((a, b) => b.count - a.count);
   const maxCount = Math.max(...cues.map(c => c.count), 1);
 
-  container.innerHTML = cues.map((c, idx) => `
-    <div class="flex items-center gap-4 px-4 py-3 ${idx === 0 ? 'bg-primary-fixed/10' : ''}">
-      <div class="w-40 shrink-0 flex items-center gap-2">
+  container.innerHTML = cues.map((c, idx) => {
+    const isMajor = c.key === "person_based" || c.key === "location_based";
+    const isStory = c.key === "event_based";
+    const rowBg = isStory ? "bg-secondary-fixed/15" : (isMajor ? "bg-surface-container-low/40" : "");
+    const barColor = isStory ? "bg-secondary" : (isMajor ? "bg-primary" : "bg-primary/70");
+
+    return `
+    <div class="flex items-center gap-4 px-4 py-3 ${rowBg} transition-colors">
+      <div class="w-52 shrink-0 flex items-center gap-2">
         <span class="text-xs font-bold text-outline w-4">${idx + 1}</span>
-        <span class="material-symbols-outlined text-[15px] text-primary">${c.icon}</span>
-        <span class="text-xs font-semibold text-on-surface">${c.label}</span>
+        <span class="material-symbols-outlined text-[17px] ${isStory ? 'text-secondary font-bold' : (isMajor ? 'text-primary' : 'text-on-surface-variant')}">${c.icon}</span>
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span class="text-xs font-semibold text-on-surface ${isStory ? 'text-secondary-fixed-dim font-bold' : ''}">${c.label}</span>
+          ${c.role ? `<span class="chip text-[9px] px-1.5 py-0.2 ${c.roleClass}">${c.role}</span>` : ''}
+        </div>
       </div>
       <div class="w-20 text-right shrink-0">
         <span class="text-xs font-bold text-on-surface">${c.count.toLocaleString()}</span>
       </div>
       <div class="w-24 text-right shrink-0">
-        <span class="chip bg-primary-fixed/40 text-on-surface font-bold text-xs">${c.pct}%</span>
+        <span class="chip ${isStory ? 'bg-secondary-fixed text-on-secondary-fixed font-bold' : 'bg-primary-fixed/40 text-on-surface font-bold'} text-xs">${c.pct}%</span>
       </div>
       <div class="flex-1 ml-2">
         <div class="bar-track">
-          <div class="bar-fill bg-primary" data-w="${Math.round((c.count / maxCount) * 100)}"></div>
+          <div class="bar-fill ${barColor}" data-w="${Math.round((c.count / maxCount) * 100)}"></div>
         </div>
       </div>
     </div>
-  `).join("");
+  `}).join("");
 
   requestAnimationFrame(() => {
     document.querySelectorAll("#memory-cues-rows .bar-fill[data-w]").forEach(el => {
