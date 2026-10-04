@@ -3,108 +3,129 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Google Photos - Search Discovery Engine</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <title>Google Photos — Retrieval Discovery Engine</title>
+  <meta name="description" content="AI-powered public feedback analysis surface vague-memory photo retrieval patterns and opportunity areas for the Google Photos search team."/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
   <style>
-    @layer base {
-      html, body { margin: 0; padding: 0; }
-      body { overscroll-behavior: none; }
-    }
-    ::-webkit-scrollbar { display: none; }
+    @layer base { html, body { margin:0; padding:0; } body { overscroll-behavior:none; } }
+    ::-webkit-scrollbar { display:none; }
+
+    /* Animated bar fills */
+    .bar-track { background:#e7e9e6; border-radius:9999px; height:8px; overflow:hidden; }
+    .bar-fill  { height:100%; border-radius:9999px; width:0; transition:width 1s cubic-bezier(.4,0,.2,1); }
+
+    /* Funnel connector arrow */
+    .funnel-arrow { display:flex; align-items:center; justify-content:center; color:#737785; flex-shrink:0; }
+
+    /* Card hover lift */
+    .card-lift { transition:box-shadow .18s,transform .18s; }
+    .card-lift:hover { box-shadow:0 4px 16px rgba(60,64,67,.13); transform:translateY(-2px); }
+
+    /* Evidence card quote mark */
+    .quote-mark { font-size:48px; line-height:1; color:#b2c5ff; font-family:Georgia,serif; margin-bottom:-12px; }
+
+    /* Filter tab active state */
+    .tab-btn.active { background:#0b57d0; color:#fff; }
+    .tab-btn { cursor:pointer; transition:background .15s,color .15s; }
+
+    /* Pulse skeleton */
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    .skeleton { animation:pulse 1.6s ease-in-out infinite; background:#e7e9e6; border-radius:8px; }
+
+    /* Research flow step */
+    .flow-step { border-left:3px solid #b2c5ff; padding-left:12px; }
+    .flow-step.active { border-left-color:#0b57d0; }
+
+    /* Zone color accents */
+    .zone-error    { border-top:3px solid #ba1a1a; }
+    .zone-secondary{ border-top:3px solid #00639b; }
+    .zone-tertiary { border-top:3px solid #00541e; }
+
+    /* Chip */
+    .chip { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:9999px; font-size:11px; font-weight:600; }
   </style>
   <script src="https://cdn.tailwindcss.com"></script>
   <script id="tailwind-config">
     tailwind.config = {
-      darkMode: "class",
       theme: {
         extend: {
           colors: {
-            "on-primary-fixed": "#001847",
-            "on-error-container": "#93000a",
-            "secondary-fixed-dim": "#96cbff",
-            "secondary-container": "#7ec1ff",
-            "on-error": "#ffffff",
-            "error-container": "#ffdad6",
-            "on-primary-container": "#ced9ff",
-            "on-tertiary": "#ffffff",
-            "on-secondary": "#ffffff",
-            "primary-fixed-dim": "#b2c5ff",
-            "surface-container-lowest": "#ffffff",
-            "surface-tint": "#0856cf",
-            "surface": "#f8faf7",
-            "surface-variant": "#e1e3e0",
-            "tertiary-fixed-dim": "#73dc82",
-            "on-tertiary-container": "#002108",
-            "on-primary-fixed-variant": "#0040a1",
-            "surface-dim": "#d8dbd8",
-            "surface-container": "#eceeec",
-            "outline": "#737785",
-            "surface-container-low": "#f2f4f1",
-            "on-background": "#191c1b",
-            "primary-container": "#0b57d0",
-            "primary": "#0041a2",
-            "inverse-primary": "#b2c5ff",
-            "secondary": "#00639b",
-            "background": "#f8faf7",
-            "on-tertiary-fixed": "#002108",
-            "surface-bright": "#f8faf7",
-            "on-surface-variant": "#444746",
-            "outline-variant": "#c4c7c5",
-            "tertiary": "#006e1c",
-            "error": "#ba1a1a",
-            "secondary-fixed": "#cfe5ff",
-            "surface-container-highest": "#e2e3e0",
-            "surface-container-high": "#e7e9e6",
-            "on-secondary-fixed": "#001d33",
-            "primary-fixed": "#dbe1ff",
-            "on-surface": "#191c1b"
+            "surface-container-lowest":"#ffffff","surface-container-low":"#f2f4f1",
+            "surface-container":"#eceeec","surface-container-high":"#e7e9e6",
+            "surface":"#f8faf7","surface-dim":"#d8dbd8","outline-variant":"#c3c6d6",
+            "outline":"#737785","on-surface":"#191c1b","on-surface-variant":"#424654",
+            "primary":"#0041a2","primary-container":"#0b57d0","primary-fixed":"#dae2ff",
+            "primary-fixed-dim":"#b2c5ff","on-primary":"#ffffff","on-primary-fixed":"#001847",
+            "secondary":"#00639b","secondary-fixed":"#cee5ff","on-secondary-fixed":"#001d33",
+            "tertiary":"#00541e","tertiary-container":"#c8f8cd","on-tertiary-container":"#002108",
+            "error":"#ba1a1a","error-container":"#ffdad6","on-error-container":"#93000a",
           },
-          fontFamily: {
-            headline: ["Plus Jakarta Sans"],
-            body: ["Plus Jakarta Sans"],
-            label: ["Plus Jakarta Sans"]
-          }
+          fontFamily: { sans: ["Plus Jakarta Sans","sans-serif"] }
         }
       }
     };
   </script>
   <script src="config.js"></script>
 </head>
-<body class="bg-surface text-on-surface font-body antialiased flex h-screen overflow-hidden">
+<body class="bg-surface text-on-surface font-sans antialiased flex h-screen overflow-hidden">
 
-<!-- Side Navigation Bar -->
-<aside class="w-64 bg-surface-container-low flex flex-col justify-between p-4 border-r border-outline-variant/30 shrink-0">
-  <div class="flex flex-col gap-6">
-    <div class="flex items-center gap-3 px-2">
-      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-primary to-primary-container flex items-center justify-center text-on-primary shadow-xs">
-        <span class="material-symbols-outlined text-[24px]">photo_library</span>
+<!-- ═══════════════════════════════════════════════════════════ SIDEBAR NAV -->
+<aside class="w-64 bg-surface-container-low flex flex-col justify-between p-4 border-r border-outline-variant/40 shrink-0">
+  <div class="flex flex-col gap-5">
+
+    <!-- Logo -->
+    <div class="flex items-center gap-3 px-2 pt-1">
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white shadow-sm">
+        <span class="material-symbols-outlined text-[22px]">travel_explore</span>
       </div>
       <div>
-        <h1 class="font-headline-sm text-headline-sm font-bold tracking-tight text-on-surface">Discovery</h1>
-        <p class="font-label-sm text-label-sm text-on-surface-variant">Google Photos Search PM</p>
+        <p class="font-bold text-sm text-on-surface leading-tight">Discovery Engine</p>
+        <p class="text-xs text-on-surface-variant leading-tight">Google Photos PM</p>
       </div>
     </div>
 
+    <!-- Research flow indicator -->
+    <div class="px-2 py-3 bg-surface-container rounded-2xl border border-outline-variant/30">
+      <p class="text-[10px] font-semibold text-on-surface-variant uppercase tracking-widest mb-2">Research Story</p>
+      <div class="flex flex-col gap-1.5 text-xs">
+        <div class="flow-step active text-primary font-semibold">Public Feedback</div>
+        <div class="flow-step active text-primary font-semibold">What Users Remember</div>
+        <div class="flow-step active text-primary font-semibold">Where It Breaks</div>
+        <div class="flow-step text-on-surface-variant">↳ Primary Research</div>
+        <div class="flow-step text-on-surface-variant">↳ H1/H2/H3 Validated</div>
+      </div>
+    </div>
+
+    <!-- Nav links -->
     <nav class="flex flex-col gap-1">
-      <a class="flex items-center gap-3 px-3 py-2.5 rounded-full bg-primary-container text-on-primary font-semibold shadow-xs" href="#overview">
-        <span class="material-symbols-outlined text-[20px]">troubleshoot</span>
-        <span class="font-label-lg text-label-lg">Search Pain Points</span>
+      <a id="nav-evidence" href="#evidence-base" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-full bg-primary-container text-white font-semibold text-sm">
+        <span class="material-symbols-outlined text-[18px]">dataset</span>
+        <span>Evidence Base</span>
       </a>
-      <a class="flex items-center gap-3 px-3 py-2.5 rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" href="#topBreakReasons">
-        <span class="material-symbols-outlined text-[20px]">running_with_errors</span>
-        <span class="font-label-lg text-label-lg">Top 5 Break Reasons</span>
+      <a id="nav-remember" href="#what-remembered" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors text-sm">
+        <span class="material-symbols-outlined text-[18px]">psychology</span>
+        <span>What Users Remember</span>
       </a>
-      <a class="flex items-center gap-3 px-3 py-2.5 rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" href="#aiReviewSummarizer">
-        <span class="material-symbols-outlined text-[20px]">auto_awesome</span>
-        <span class="font-label-lg text-label-lg">AI Review Summarizer</span>
+      <a id="nav-breaks" href="#where-breaks" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors text-sm">
+        <span class="material-symbols-outlined text-[18px]">warning</span>
+        <span>Where It Breaks</span>
       </a>
-      <a class="flex items-center gap-3 px-3 py-2.5 rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" href="#rawReviews">
-        <span class="material-symbols-outlined text-[20px]">rate_review</span>
-        <span class="font-label-lg text-label-lg">As-Is Raw Reviews</span>
+      <a id="nav-verbatim" href="#verbatim-evidence" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors text-sm">
+        <span class="material-symbols-outlined text-[18px]">format_quote</span>
+        <span>Verbatim Evidence</span>
+      </a>
+      <a id="nav-synthesis" href="#synthesis" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors text-sm">
+        <span class="material-symbols-outlined text-[18px]">insights</span>
+        <span>Discovery Synthesis</span>
+      </a>
+      <a id="nav-chat" href="#ai-synthesizer" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors text-sm">
+        <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+        <span>AI Synthesizer</span>
       </a>
     </nav>
   </div>
 
+  <!-- PM badge -->
   <div class="p-3 bg-surface-container-lowest rounded-2xl border border-outline-variant/30 flex items-center gap-3">
     <div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-xs">PM</div>
     <div class="flex flex-col text-xs">
@@ -114,278 +135,790 @@
   </div>
 </aside>
 
-<!-- Main Scrollable Dashboard Content -->
-<div class="flex-1 flex flex-col h-screen overflow-y-auto">
-  <main class="flex-1 p-6 md:p-8 flex flex-col gap-8 max-w-7xl mx-auto w-full">
-    
-    <!-- Page Banner -->
-    <section id="overview" class="flex flex-col gap-2">
-      <div class="flex items-center gap-2">
-        <h1 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">Photo Search Pain Points & Review Analysis</h1>
-        <span class="px-3 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">56% Complaint Share</span>
-      </div>
-      <p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
-        Synthesized from verbatim photo search reviews collected across Play Store, App Store, and Reddit.
-      </p>
-    </section>
+<!-- ══════════════════════════════════════════════════════════ MAIN CONTENT -->
+<div class="flex-1 flex flex-col h-screen overflow-y-auto" id="main-scroll">
+<main class="flex-1 p-6 md:p-8 flex flex-col gap-10 max-w-6xl mx-auto w-full">
 
-    <!-- KPI Metrics Row -->
-    <section class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4">
-      <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-xs border border-outline-variant/30 flex flex-col justify-between">
-        <div>
-          <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Raw Reviews Ingested</span>
-          <p id="totalRawVal" class="font-display-lg text-display-lg font-bold text-on-surface mt-1">4,128</p>
-        </div>
-        <p class="font-label-sm text-label-sm text-on-surface-variant mt-3">Live data from connected sources</p>
+  <!-- ─────────────────────────────────── PAGE HEADER -->
+  <section class="flex flex-col gap-1">
+    <div class="flex items-center gap-3 flex-wrap">
+      <h1 class="text-2xl font-bold text-on-surface tracking-tight">AI-Powered Retrieval Discovery Engine</h1>
+      <span class="chip bg-primary-fixed text-on-primary-fixed">Public Feedback Analysis</span>
+    </div>
+    <p class="text-sm text-on-surface-variant max-w-2xl mt-1">
+      Analyzing Play Store, App Store, Reddit, and Community discussions to surface vague-memory photo retrieval patterns and opportunity areas.
+    </p>
+    <!-- Research questions answered by this dashboard -->
+    <div class="mt-3 flex flex-wrap gap-2">
+      <span class="chip bg-surface-container border border-outline-variant/40 text-on-surface-variant">What kinds of photos do users struggle to retrieve?</span>
+      <span class="chip bg-surface-container border border-outline-variant/40 text-on-surface-variant">What do people remember about a photo?</span>
+      <span class="chip bg-surface-container border border-outline-variant/40 text-on-surface-variant">What have they forgotten?</span>
+      <span class="chip bg-surface-container border border-outline-variant/40 text-on-surface-variant">How do users search with incomplete memory?</span>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────── SECTION 1: EVIDENCE BASE -->
+  <section id="evidence-base" class="flex flex-col gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-primary-fixed text-on-primary-fixed flex items-center justify-center">
+        <span class="material-symbols-outlined text-[20px]">dataset</span>
+      </div>
+      <div>
+        <h2 class="text-base font-bold text-on-surface">Evidence Base</h2>
+        <p class="text-xs text-on-surface-variant">Public-feedback pipeline counts — not individual users</p>
+      </div>
+      <span class="ml-auto chip bg-surface-container-high text-on-surface-variant border border-outline-variant/30">Secondary Research</span>
+    </div>
+
+    <!-- Funnel row -->
+    <div class="flex items-center gap-2">
+      <!-- Step 1 -->
+      <div class="flex-1 bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/30 card-lift">
+        <p class="text-[10px] font-semibold text-on-surface-variant uppercase tracking-widest">Raw Public Records</p>
+        <p id="val-raw" class="text-4xl font-bold text-on-surface mt-1">4,128</p>
+        <p class="text-xs text-on-surface-variant mt-2">Play Store · App Store · Reddit · Community</p>
+        <div id="sources-row" class="flex flex-wrap gap-1.5 mt-3"></div>
       </div>
 
-      <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-xs border border-primary/20 bg-gradient-to-br from-primary-fixed/10 to-transparent flex flex-col justify-between">
-        <div>
-          <span class="font-label-sm text-label-sm text-primary uppercase tracking-wider font-bold">Filtered Search Corpus</span>
-          <p id="totalFilteredVal" class="font-display-lg text-display-lg font-bold text-on-surface mt-1">2,638</p>
-        </div>
-        <p class="font-label-sm text-label-sm text-tertiary font-semibold mt-3">Cleaned search-only corpus</p>
+      <!-- Arrow -->
+      <div class="funnel-arrow flex-col gap-0.5 text-center shrink-0 w-10">
+        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+        <span class="text-[9px] font-semibold text-on-surface-variant">Dedup +<br>Filter</span>
       </div>
 
-      <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-xs border border-outline-variant/30 flex flex-col justify-between">
-        <div>
-          <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Search Failure Rate</span>
-          <p id="failureRateVal" class="font-display-lg text-display-lg font-bold text-error mt-1">63.9%</p>
-        </div>
-        <p class="font-label-sm text-label-sm text-on-surface-variant mt-3">Complaints citing search breakdown</p>
+      <!-- Step 2 -->
+      <div class="flex-1 bg-surface-container-lowest rounded-2xl p-5 border border-primary/20 bg-gradient-to-br from-primary-fixed/20 to-transparent card-lift">
+        <p class="text-[10px] font-semibold text-primary uppercase tracking-widest">Search-Relevant Records</p>
+        <p id="val-filtered" class="text-4xl font-bold text-on-surface mt-1">2,638</p>
+        <p class="text-xs text-on-surface-variant mt-2">After deduplication &amp; relevance filtering</p>
+        <p id="pct-filtered" class="text-xs text-primary font-semibold mt-3">— of raw records</p>
       </div>
-    </section>
 
-    <!-- SECTION 1: TOP 5 BREAKDOWN REASONS -->
-    <section id="topBreakReasons" class="flex flex-col gap-4">
+      <!-- Arrow -->
+      <div class="funnel-arrow flex-col gap-0.5 text-center shrink-0 w-10">
+        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+        <span class="text-[9px] font-semibold text-on-surface-variant">Retrieval<br>Classify</span>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="flex-1 bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/30 card-lift">
+        <p class="text-[10px] font-semibold text-on-surface-variant uppercase tracking-widest">Retrieval-Relevant Cases</p>
+        <p id="val-retrieval" class="text-4xl font-bold text-on-surface mt-1">1,241</p>
+        <p class="text-xs text-on-surface-variant mt-2">Cases describing a photo retrieval attempt</p>
+        <p id="pct-retrieval" class="text-xs font-semibold text-on-surface-variant mt-3">— of search-relevant records</p>
+        <p class="text-[9px] text-outline mt-1">Derived from pipeline ratio</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────── SECTION 2: WHAT USERS REMEMBER -->
+  <section id="what-remembered" class="flex flex-col gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center">
+        <span class="material-symbols-outlined text-[20px]">psychology</span>
+      </div>
+      <div>
+        <h2 class="text-base font-bold text-on-surface">What Users Remember</h2>
+        <p class="text-xs text-on-surface-variant">Memory cue distribution across retrieval-relevant cases</p>
+      </div>
+      <span class="ml-auto chip bg-secondary-fixed text-on-secondary-fixed">Secondary research — public feedback</span>
+    </div>
+
+    <div id="memory-cues-section" class="flex flex-col gap-3">
+      <!-- Filled by JS -->
+      <div class="skeleton h-28 w-full rounded-2xl"></div>
+    </div>
+
+    <!-- Retrieval type distribution -->
+    <div id="retrieval-type-section" class="hidden flex flex-col gap-3 mt-1">
+      <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">What Kind of Photo Were They Trying to Retrieve?</p>
+      <div id="retrieval-types-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────── SECTION 3: WHERE RETRIEVAL BREAKS -->
+  <section id="where-breaks" class="flex flex-col gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-error-container text-on-error-container flex items-center justify-center">
+        <span class="material-symbols-outlined text-[20px]">warning</span>
+      </div>
+      <div>
+        <h2 class="text-base font-bold text-on-surface">Where Retrieval Breaks</h2>
+        <p class="text-xs text-on-surface-variant">Failure patterns discovered in public feedback</p>
+      </div>
+      <span class="ml-auto chip bg-error-container text-on-error-container">Discovery pattern — requires primary validation</span>
+    </div>
+
+    <div id="failure-zones-section" class="flex flex-col gap-3">
+      <!-- Filled by JS -->
+      <div class="skeleton h-36 w-full rounded-2xl"></div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────── SECTION 4: VERBATIM EVIDENCE -->
+  <section id="verbatim-evidence" class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 flex flex-col gap-5">
+    <div class="flex items-center justify-between flex-wrap gap-3">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-error-container text-on-error-container flex items-center justify-center shadow-xs">
-          <span class="material-symbols-outlined text-[22px]">running_with_errors</span>
+        <div class="w-9 h-9 rounded-xl bg-primary-fixed text-on-primary-fixed flex items-center justify-center">
+          <span class="material-symbols-outlined text-[20px]">format_quote</span>
         </div>
         <div>
-          <h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Top 5 Reasons Photo Search Breaks Down</h2>
-          <p class="font-body-sm text-body-sm text-on-surface-variant">Ranked by volume share and user impact score.</p>
+          <h2 class="text-base font-bold text-on-surface">Verbatim User Evidence</h2>
+          <p class="text-xs text-on-surface-variant">Quote → Behavior → Retrieval Problem</p>
         </div>
       </div>
+      <span id="evidence-count-badge" class="chip bg-surface-container-high text-on-surface-variant border border-outline-variant/30">Loading…</span>
+    </div>
 
-      <div id="clustersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <!-- Rendered via JavaScript -->
-        <div class="p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/30 animate-pulse text-sm text-on-surface-variant">Loading clusters...</div>
+    <!-- Filter tabs -->
+    <div class="flex flex-wrap gap-2" id="zone-filter-tabs">
+      <button data-zone="all"               class="tab-btn active chip bg-primary-container text-white px-4 py-1.5 rounded-full text-xs font-semibold">All</button>
+      <button data-zone="first_search_gap"  class="tab-btn chip bg-error-container text-on-error-container px-4 py-1.5 rounded-full text-xs font-semibold">First Search Gap</button>
+      <button data-zone="search_match_gap"  class="tab-btn chip bg-secondary-fixed text-on-secondary-fixed px-4 py-1.5 rounded-full text-xs font-semibold">Search Match Gap</button>
+      <button data-zone="refinement_gap"    class="tab-btn chip bg-tertiary-container text-on-tertiary-container px-4 py-1.5 rounded-full text-xs font-semibold">Refinement Gap</button>
+    </div>
+
+    <!-- Search input -->
+    <input id="evidence-search" oninput="filterEvidence()" type="text"
+      placeholder="Search evidence by keyword…"
+      class="h-10 px-4 rounded-full bg-surface-container-low border border-outline-variant/40 focus:outline-none focus:ring-2 focus:ring-primary text-sm w-full"/>
+
+    <!-- Evidence grid -->
+    <div id="evidence-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="skeleton h-40 rounded-2xl"></div>
+      <div class="skeleton h-40 rounded-2xl"></div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────── SECTION 5: DISCOVERY SYNTHESIS -->
+  <section id="synthesis" class="bg-gradient-to-br from-primary-fixed/30 to-surface-container rounded-3xl p-6 border border-primary/20 flex flex-col gap-5">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center">
+        <span class="material-symbols-outlined text-[20px]">insights</span>
       </div>
-    </section>
+      <h2 class="text-base font-bold text-on-surface">Discovery Synthesis</h2>
+    </div>
 
-    <!-- SECTION 2: AI REVIEW SUMMARIZER CHATBOT -->
-    <section id="aiReviewSummarizer" class="bg-surface-container-lowest border border-primary/30 rounded-3xl p-6 shadow-md flex flex-col gap-6">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-primary text-on-primary flex items-center justify-center shadow-xs">
-          <span class="material-symbols-outlined text-[22px]">auto_awesome</span>
-        </div>
-        <div>
-          <h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">AI Reviewer Synthesis</h2>
-          <p class="font-body-sm text-body-sm text-on-surface-variant">Ask questions and generate syntheses across customer search feedback.</p>
-        </div>
-      </div>
+    <p class="text-sm text-on-surface leading-relaxed">
+      Public feedback reveals multiple points where vague-memory photo retrieval can break. The discovery engine identified these patterns by analyzing verbatim user reports across Play Store, App Store, Reddit, and Community discussions.
+    </p>
 
-      <!-- Presets -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <button onclick="runPreset('Summarize top 5 search failure points')" class="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:border-primary text-left transition-all">
-          <span class="font-label-md text-label-md font-bold text-primary block">Summarize Top 5 Failures</span>
-          <span class="font-body-sm text-body-sm text-on-surface-variant mt-1 block">Synthesize breakdown points</span>
-        </button>
-        <button onclick="runPreset('Why do users struggle to find photos by exact date?')" class="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:border-primary text-left transition-all">
-          <span class="font-label-md text-label-md font-bold text-primary block">Date & Time Search Gaps</span>
-          <span class="font-body-sm text-body-sm text-on-surface-variant mt-1 block">Analyze timeline friction</span>
-        </button>
-        <button onclick="runPreset('What are users saying about face recognition and people tagging?')" class="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:border-primary text-left transition-all">
-          <span class="font-label-md text-label-md font-bold text-primary block">Face Recognition Friction</span>
-          <span class="font-body-sm text-body-sm text-on-surface-variant mt-1 block">Investigate tagging complaints</span>
-        </button>
-      </div>
+    <div id="synthesis-patterns" class="flex flex-col gap-3"></div>
 
-      <!-- AI Console Output -->
-      <div id="aiConsole" class="bg-surface-container-low/70 border border-outline-variant/30 rounded-2xl p-5 flex flex-col gap-3">
-        <div class="flex items-center justify-between border-b border-outline-variant/20 pb-2">
-          <span id="aiConsoleHeading" class="font-label-md text-label-md font-bold text-on-surface">AI Synthesis Ready</span>
-          <span class="px-2 py-0.5 rounded bg-primary-container text-on-primary text-xs font-semibold">Groq Powered</span>
+    <!-- Research progression -->
+    <div class="border-t border-primary/20 pt-4 mt-1">
+      <p class="text-xs font-semibold text-primary uppercase tracking-wider mb-3">Research Progression</p>
+      <div class="flex items-start gap-0 flex-wrap">
+        <div class="flex flex-col items-center gap-1 text-center w-28">
+          <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">1</div>
+          <p class="text-[10px] font-semibold text-on-surface">Business Metric</p>
         </div>
-        <div id="aiConsoleBody" class="text-sm text-on-surface leading-relaxed min-h-[60px]">
-          Click any preset question above or enter a query below to synthesize live insights.
+        <div class="flex items-center mt-3.5 text-outline-variant"><span class="material-symbols-outlined text-[16px]">arrow_forward</span></div>
+        <div class="flex flex-col items-center gap-1 text-center w-28">
+          <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">2</div>
+          <p class="text-[10px] font-semibold text-on-surface">AI Discovery<br><span class="font-normal text-on-surface-variant">(this dashboard)</span></p>
+        </div>
+        <div class="flex items-center mt-3.5 text-outline-variant"><span class="material-symbols-outlined text-[16px]">arrow_forward</span></div>
+        <div class="flex flex-col items-center gap-1 text-center w-28">
+          <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">3</div>
+          <p class="text-[10px] font-semibold text-on-surface">Public Retrieval<br>Patterns</p>
+        </div>
+        <div class="flex items-center mt-3.5 text-outline-variant"><span class="material-symbols-outlined text-[16px]">arrow_forward</span></div>
+        <div class="flex flex-col items-center gap-1 text-center w-28">
+          <div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center text-xs font-bold border">4</div>
+          <p class="text-[10px] font-semibold text-on-surface-variant">Primary Research</p>
+        </div>
+        <div class="flex items-center mt-3.5 text-outline-variant"><span class="material-symbols-outlined text-[16px]">arrow_forward</span></div>
+        <div class="flex flex-col items-center gap-1 text-center w-36">
+          <div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center text-xs font-bold border">5</div>
+          <p class="text-[10px] font-semibold text-on-surface-variant">H1/H2/H3 Validated</p>
         </div>
       </div>
+    </div>
 
-      <!-- Chat Input -->
+    <!-- Explicit disclaimer -->
+    <div class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/30 mt-1">
       <div class="flex gap-2">
-        <input id="chatInput" type="text" placeholder="Ask AI anything about photo search reviews..." class="flex-1 h-12 px-4 rounded-full bg-surface-container-low border border-outline-variant/40 focus:outline-none focus:ring-2 focus:ring-primary text-sm"/>
-        <button onclick="sendChat()" class="px-6 h-12 rounded-full bg-primary text-on-primary font-semibold text-sm hover:opacity-90 transition-all flex items-center gap-1">
-          <span class="material-symbols-outlined text-[18px]">send</span>
-          <span>Ask</span>
-        </button>
+        <span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">info</span>
+        <p class="text-xs text-on-surface-variant leading-relaxed">
+          <strong class="text-on-surface">Data integrity note:</strong> All counts and percentages on this dashboard are derived exclusively from public feedback records. Primary research percentages (e.g., 87.5%, 39.3%) appear only in the validated primary research findings and are not represented here.
+        </p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- SECTION 3: RAW USER REVIEWS (PAIN POINTS ONLY) -->
-    <section id="rawReviews" class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-xs flex flex-col gap-6">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-primary-fixed text-on-primary-fixed flex items-center justify-center">
-            <span class="material-symbols-outlined text-[22px]">rate_review</span>
-          </div>
-          <div>
-            <h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">As-Is Raw User Reviews</h2>
-            <p class="font-body-sm text-body-sm text-on-surface-variant">Authentic user complaints reflecting search pain points.</p>
-          </div>
-        </div>
-        <span id="reviewCountBadge" class="px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm font-semibold">
-          Showing Reviews
-        </span>
+  <!-- ─────────────────────────────────── SECTION 6: AI SYNTHESIZER -->
+  <section id="ai-synthesizer" class="bg-surface-container-lowest border border-primary/20 rounded-3xl p-6 flex flex-col gap-5">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center">
+        <span class="material-symbols-outlined text-[20px]">auto_awesome</span>
       </div>
-
-      <!-- Filter Input -->
-      <div class="flex flex-col md:flex-row gap-3">
-        <input id="reviewSearch" oninput="filterReviews()" type="text" placeholder="Search verbatim reviews by keyword (e.g., date, album, face)..." class="flex-1 h-10 px-4 rounded-full bg-surface-container-low border border-outline-variant/40 focus:outline-none focus:ring-2 focus:ring-primary text-sm"/>
+      <div>
+        <h2 class="text-base font-bold text-on-surface">AI Evidence Synthesizer</h2>
+        <p class="text-xs text-on-surface-variant">Ask questions about the public feedback dataset</p>
       </div>
+      <span class="ml-auto chip bg-primary-fixed text-on-primary-fixed">Groq Powered</span>
+    </div>
 
-      <!-- Reviews Grid -->
-      <div id="reviewsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- Rendered via JavaScript -->
-        <div class="p-6 bg-surface-container-low rounded-2xl text-sm text-on-surface-variant">Loading reviews...</div>
+    <!-- Presets -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <button onclick="runPreset('What kinds of old photos do users most struggle to find and retrieve?')"
+        class="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:border-primary text-left transition-all">
+        <span class="font-bold text-primary text-xs block">Photo Retrieval Struggles</span>
+        <span class="text-[11px] text-on-surface-variant mt-1 block">What old photos are hardest to find?</span>
+      </button>
+      <button onclick="runPreset('What information do users remember about a photo when searching? What have they forgotten?')"
+        class="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:border-primary text-left transition-all">
+        <span class="font-bold text-primary text-xs block">Memory vs. Forgetting</span>
+        <span class="text-[11px] text-on-surface-variant mt-1 block">Remember vs. forget breakdown</span>
+      </button>
+      <button onclick="runPreset('How do users formulate searches when their memory is incomplete or vague?')"
+        class="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:border-primary text-left transition-all">
+        <span class="font-bold text-primary text-xs block">Incomplete Memory Search</span>
+        <span class="text-[11px] text-on-surface-variant mt-1 block">Search strategies with vague memory</span>
+      </button>
+    </div>
+
+    <!-- AI Output -->
+    <div id="ai-console" class="bg-surface-container-low/70 border border-outline-variant/30 rounded-2xl p-5 flex flex-col gap-3">
+      <div class="flex items-center justify-between border-b border-outline-variant/20 pb-2">
+        <span id="ai-console-heading" class="text-sm font-bold text-on-surface">AI Synthesis Ready</span>
       </div>
-    </section>
+      <div id="ai-console-body" class="text-sm text-on-surface leading-relaxed min-h-[60px]">
+        Click a preset or enter a question below to synthesize public-feedback insights.
+      </div>
+    </div>
 
-  </main>
-</div>
+    <!-- Chat input -->
+    <div class="flex gap-2">
+      <input id="chat-input" type="text" placeholder="Ask anything about photo retrieval patterns in public feedback…"
+        class="flex-1 h-11 px-4 rounded-full bg-surface-container-low border border-outline-variant/40 focus:outline-none focus:ring-2 focus:ring-primary text-sm"/>
+      <button onclick="sendChat()"
+        class="px-6 h-11 rounded-full bg-primary text-white font-semibold text-sm hover:opacity-90 transition-all flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[16px]">send</span>
+        Ask
+      </button>
+    </div>
+  </section>
 
+</main>
+</div><!-- /main-scroll -->
+
+<!-- ══════════════════════════════════════════════════════════════ JAVASCRIPT -->
 <script>
-  let allReviews = [];
+"use strict";
 
-  document.addEventListener('DOMContentLoaded', () => {
-    loadDashboardData();
+// ── Global state ─────────────────────────────────────────────────────────────
+let allEvidenceCards  = [];   // tagged_documents evidence
+let allFallbackReviews = [];  // raw_documents fallback
+let activeZone        = "all";
+
+// ── Source platform config ────────────────────────────────────────────────────
+const SOURCE_CONFIG = {
+  play_store: { label:"Play Store",  icon:"android",       bg:"bg-[#01875f]/10", text:"text-[#01875f]" },
+  app_store:  { label:"App Store",   icon:"apple",         bg:"bg-[#0b57d0]/10", text:"text-[#0b57d0]" },
+  reddit:     { label:"Reddit",      icon:"forum",         bg:"bg-[#FF4500]/10", text:"text-[#c73800]" },
+  community:  { label:"Community",   icon:"people",        bg:"bg-surface-container-high", text:"text-on-surface-variant" },
+};
+
+// Zone UI config
+const ZONE_CONFIG = {
+  first_search_gap: { accentClass:"zone-error",     badgeBg:"bg-error-container",    badgeText:"text-on-error-container",    hex:"#ba1a1a" },
+  search_match_gap: { accentClass:"zone-secondary",  badgeBg:"bg-secondary-fixed",    badgeText:"text-on-secondary-fixed",    hex:"#00639b" },
+  refinement_gap:   { accentClass:"zone-tertiary",   badgeBg:"bg-tertiary-container", badgeText:"text-on-tertiary-container", hex:"#00541e" },
+};
+
+const OUTCOME_CONFIG = {
+  failed:    { bg:"bg-error-container",    text:"text-on-error-container" },
+  partial:   { bg:"bg-secondary-fixed",    text:"text-on-secondary-fixed" },
+  succeeded: { bg:"bg-tertiary-container", text:"text-on-tertiary-container" },
+  unknown:   { bg:"bg-surface-container-high", text:"text-on-surface-variant" },
+};
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  loadDashboard();
+  setupZoneFilter();
+  setupNavHighlight();
+});
+
+function loadDashboard() {
+  const api = window.API_BASE_URL || "http://localhost:8000";
+  fetch(`${api}/api/dashboard-data`)
+    .then(r => r.json())
+    .then(data => {
+      renderSection1(data);
+      renderSection2(data);
+      renderSection3(data);
+      renderSection4(data);
+      renderSection5(data);
+    })
+    .catch(err => {
+      document.getElementById("evidence-grid").innerHTML =
+        `<div class="col-span-2 p-6 text-sm text-error">Could not reach API: ${err.message}</div>`;
+    });
+}
+
+// ── Section 1: Evidence Base ──────────────────────────────────────────────────
+function renderSection1(data) {
+  const raw       = data.total_raw       || 4128;
+  const filtered  = data.total_filtered  || 2638;
+  const retrieval = data.total_retrieval_relevant || 1241;
+
+  document.getElementById("val-raw").textContent       = raw.toLocaleString();
+  document.getElementById("val-filtered").textContent  = filtered.toLocaleString();
+  document.getElementById("val-retrieval").textContent = retrieval.toLocaleString();
+
+  document.getElementById("pct-filtered").textContent =
+    `${((filtered / raw) * 100).toFixed(1)}% of raw records`;
+  document.getElementById("pct-retrieval").textContent =
+    `${((retrieval / filtered) * 100).toFixed(1)}% of search-relevant records`;
+
+  // Source chips
+  const sources = data.sources || {};
+  const row = document.getElementById("sources-row");
+  const order = ["play_store","app_store","reddit","community"];
+  order.forEach(s => {
+    const n = sources[s];
+    if (!n) return;
+    const cfg = SOURCE_CONFIG[s] || { label:s, icon:"source", bg:"bg-surface-container-high", text:"text-on-surface-variant" };
+    const chip = document.createElement("span");
+    chip.className = `chip ${cfg.bg} ${cfg.text} border border-current/20`;
+    chip.innerHTML = `<span class="material-symbols-outlined text-[11px]">${cfg.icon}</span>${cfg.label}: ${n.toLocaleString()}`;
+    row.appendChild(chip);
   });
+}
 
-  function loadDashboardData() {
-    const apiUrl = window.API_BASE_URL || 'http://localhost:8000';
-    fetch(`${apiUrl}/api/dashboard-data`)
-      .then(res => res.json())
-      .then(data => {
-        // 1. KPIs
-        if (data.total_raw) document.getElementById('totalRawVal').innerText = Number(data.total_raw).toLocaleString();
-        if (data.total_filtered) document.getElementById('totalFilteredVal').innerText = Number(data.total_filtered).toLocaleString();
-        if (data.total_raw && data.total_filtered) {
-          const rate = ((data.total_filtered / data.total_raw) * 100).toFixed(1);
-          document.getElementById('failureRateVal').innerText = `${rate}%`;
-        }
+// ── Section 2: What Users Remember ───────────────────────────────────────────
+function renderSection2(data) {
+  const cueSection = document.getElementById("memory-cues-section");
 
-        // 2. Clusters Grid
-        const clustersGrid = document.getElementById('clustersGrid');
-        if (data.clusters && data.clusters.length > 0) {
-          clustersGrid.innerHTML = data.clusters.map((c, i) => `
-            <div class="bg-surface-container-lowest rounded-2xl p-5 border ${i === 0 ? 'border-2 border-primary/40 shadow-sm' : 'border-outline-variant/30 shadow-xs'} flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-all">
-              <div class="absolute top-0 left-0 right-0 ${i === 0 ? 'h-1.5 bg-primary' : 'h-1 bg-secondary'}"></div>
-              <div>
-                <div class="flex items-center justify-between mb-3">
-                  <span class="w-7 h-7 rounded-full ${i === 0 ? 'bg-primary-container text-on-primary' : 'bg-surface-container-high text-on-surface'} font-bold text-xs flex items-center justify-center">#${i+1}</span>
-                  <span class="px-2 py-0.5 rounded-full ${i === 0 ? 'bg-error-container text-on-error-container' : 'bg-secondary-fixed text-on-secondary-fixed'} font-label-sm text-xs font-bold">${c.severity_score > 80 ? 'Critical' : 'High'}</span>
-                </div>
-                <h3 class="font-title-sm font-bold text-on-surface leading-snug">${c.label}</h3>
-                <p class="font-body-sm text-on-surface-variant mt-2 leading-relaxed text-xs line-clamp-3">${c.summary}</p>
+  if (!data.memory_cues) {
+    cueSection.innerHTML = renderPipelineNotReady(
+      "Memory Cue Distribution",
+      "The AI analysis layer (Phase 3) has not yet produced tagged_documents for this corpus, or no records meet the quality threshold. Run the analysis pipeline to populate this section."
+    );
+  } else {
+    const mc = data.memory_cues;
+    const maxCount = Math.max(...mc.cues.map(c => c.count), 1);
+
+    cueSection.innerHTML = `
+      <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 overflow-hidden">
+        <div class="p-5 border-b border-outline-variant/20">
+          <p class="text-xs text-on-surface-variant">
+            Based on <strong class="text-on-surface">${mc.total_tagged.toLocaleString()} tagged records</strong>
+            — denominator: <strong class="text-on-surface">${mc.denominator.toLocaleString()} retrieval-relevant cases</strong>
+          </p>
+          <p class="text-[10px] text-outline mt-1">${mc.note}</p>
+        </div>
+        <div class="divide-y divide-outline-variant/20">
+          ${mc.cues.map((c, i) => `
+            <div class="flex items-center gap-4 px-5 py-4 ${i === 0 ? 'bg-primary-fixed/10' : ''}">
+              <div class="w-32 shrink-0 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[16px] text-primary">${c.icon}</span>
+                <span class="text-xs font-semibold text-on-surface">${c.label}</span>
               </div>
-              <div class="mt-4 pt-3 border-t border-outline-variant/30 flex flex-col gap-1 text-xs">
-                <div class="flex items-center justify-between">
-                  <span class="text-on-surface-variant font-medium">Impact Score:</span>
-                  <span class="font-bold text-primary">${c.opportunity_score ? Number(c.opportunity_score).toFixed(1) : '50.0'} / 100</span>
-                </div>
-                <div class="flex items-center justify-between">
-                  <span class="text-on-surface-variant font-medium">Volume:</span>
-                  <span class="font-semibold text-on-surface">${c.doc_count} reviews</span>
+              <div class="flex-1">
+                <div class="bar-track">
+                  <div class="bar-fill bg-primary" data-w="${Math.round((c.count / maxCount) * 100)}"></div>
                 </div>
               </div>
+              <div class="w-24 text-right shrink-0">
+                <span class="text-sm font-bold text-on-surface">${c.count.toLocaleString()}</span>
+                <span class="text-xs text-on-surface-variant ml-1">(${c.pct}%)</span>
+              </div>
             </div>
-          `).join('');
-        }
-
-        // 3. Reviews Grid
-        allReviews = data.reviews || [];
-        renderReviews(allReviews);
-      })
-      .catch(err => {
-        console.error('Failed to load dashboard data:', err);
-      });
-  }
-
-  function renderReviews(reviews) {
-    const grid = document.getElementById('reviewsGrid');
-    document.getElementById('reviewCountBadge').innerText = `Showing ${reviews.length} Verbatim Reviews`;
-    if (!reviews || reviews.length === 0) {
-      grid.innerHTML = '<div class="p-6 text-on-surface-variant text-sm">No reviews found matching criteria.</div>';
-      return;
-    }
-    grid.innerHTML = reviews.map(r => `
-      <div class="review-card bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/30 flex flex-col justify-between gap-3 shadow-xs hover:border-primary/40 transition-all">
-        <div class="flex flex-col gap-2">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-1 text-amber-500">
-              <span class="material-symbols-outlined text-[18px]">star</span>
-              <span class="font-label-sm text-xs font-bold text-on-surface">${r.rating ? Math.round(r.rating) : '1'}</span>
-            </div>
-            <span class="px-2.5 py-0.5 rounded-full ${r.source === 'app_store' ? 'bg-primary-container text-on-primary' : 'bg-secondary-fixed text-on-secondary-fixed'} text-xs font-semibold capitalize">
-              ${r.source === 'app_store' ? 'App Store' : 'Play Store'}
-            </span>
-          </div>
-          <p class="font-body-sm text-xs text-on-surface italic leading-relaxed">"${r.text}"</p>
+          `).join("")}
         </div>
-        <div class="pt-3 border-t border-outline-variant/20 flex items-center justify-between text-xs text-on-surface-variant">
-          <span class="font-medium">${r.date_str || 'Verified Store Review'}</span>
-          <span class="px-2 py-0.5 rounded bg-surface-container-high font-semibold">User Complaint</span>
+        <div class="p-3 bg-surface-container-low border-t border-outline-variant/20">
+          <p class="text-[10px] text-outline">
+            A single case may appear in multiple cue categories. Percentages use ${mc.denominator.toLocaleString()} retrieval-relevant cases as denominator.
+          </p>
         </div>
-      </div>
-    `).join('');
-  }
-
-  function filterReviews() {
-    const q = document.getElementById('reviewSearch').value.toLowerCase().trim();
-    if (!q) {
-      renderReviews(allReviews);
-      return;
-    }
-    const filtered = allReviews.filter(r => r.text && r.text.toLowerCase().includes(q));
-    renderReviews(filtered);
-  }
-
-  function runPreset(text) {
-    document.getElementById('chatInput').value = text;
-    sendChat();
-  }
-
-  function sendChat() {
-    const input = document.getElementById('chatInput');
-    const query = input.value.trim();
-    if (!query) return;
-
-    const consoleHead = document.getElementById('aiConsoleHeading');
-    const consoleBody = document.getElementById('aiConsoleBody');
-
-    consoleHead.innerText = `AI Reviewer Synthesis: "${query}"`;
-    consoleBody.innerHTML = `
-      <div class="flex items-center gap-2 text-primary font-medium italic py-2">
-        <span class="material-symbols-outlined text-[20px] animate-spin">auto_awesome</span>
-        AI is synthesizing photo search review clusters...
       </div>
     `;
 
-    const apiUrl = window.API_BASE_URL || 'http://localhost:8000';
-    fetch(`${apiUrl}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: query })
-    })
-    .then(res => res.json())
-    .then(data => {
-      consoleBody.innerHTML = data.response;
-    })
-    .catch(err => {
-      consoleBody.innerHTML = `<div class="text-error font-medium">Error connecting to AI service: ${err.message}</div>`;
+    // Animate bars after paint
+    requestAnimationFrame(() => {
+      document.querySelectorAll(".bar-fill[data-w]").forEach(el => {
+        el.style.width = el.dataset.w + "%";
+      });
     });
   }
+
+  // Retrieval type distribution
+  if (data.retrieval_types && data.retrieval_types.length > 0) {
+    const rtSection = document.getElementById("retrieval-type-section");
+    rtSection.classList.remove("hidden");
+    const grid = document.getElementById("retrieval-types-grid");
+    const maxRt = Math.max(...data.retrieval_types.map(r => r.count), 1);
+    grid.innerHTML = data.retrieval_types.map(rt => `
+      <div class="bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/30 card-lift">
+        <p class="text-xs font-semibold text-on-surface">${rt.label}</p>
+        <p class="text-2xl font-bold text-on-surface mt-1">${rt.count.toLocaleString()}</p>
+        <div class="bar-track mt-2">
+          <div class="bar-fill bg-secondary" data-w="${Math.round((rt.count / maxRt) * 100)}"></div>
+        </div>
+        <p class="text-[10px] text-on-surface-variant mt-1">${rt.pct}% of retrieval cases</p>
+      </div>
+    `).join("");
+    requestAnimationFrame(() => {
+      document.querySelectorAll(".bar-fill[data-w]").forEach(el => {
+        el.style.width = el.dataset.w + "%";
+      });
+    });
+  }
+}
+
+// ── Section 3: Where Retrieval Breaks ────────────────────────────────────────
+function renderSection3(data) {
+  const zoneSection = document.getElementById("failure-zones-section");
+
+  if (!data.failure_zones) {
+    zoneSection.innerHTML = renderPipelineNotReady(
+      "Failure Zone Distribution",
+      "The AI analysis layer has not yet produced failure mode data, or no records meet the quality threshold."
+    );
+    return;
+  }
+
+  const fz = data.failure_zones;
+  const maxZone = Math.max(...fz.zones.map(z => z.count), 1);
+
+  zoneSection.innerHTML = `
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      ${fz.zones.map(zone => {
+        const cfg = ZONE_CONFIG[zone.key] || { accentClass:"", badgeBg:"bg-surface-container-high", badgeText:"text-on-surface-variant" };
+        return `
+          <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 ${cfg.accentClass} overflow-hidden card-lift">
+            <div class="p-5">
+              <div class="flex items-start justify-between mb-3">
+                <div>
+                  <span class="chip ${cfg.badgeBg} ${cfg.badgeText} mb-1">${zone.hypothesis}</span>
+                  <h3 class="text-sm font-bold text-on-surface leading-snug mt-1">${zone.label}</h3>
+                </div>
+                <div class="text-right shrink-0 ml-2">
+                  <p class="text-2xl font-bold text-on-surface">${zone.count.toLocaleString()}</p>
+                  <p class="text-[10px] text-on-surface-variant">${zone.pct}% of ${fz.denominator.toLocaleString()}</p>
+                </div>
+              </div>
+              <p class="text-xs text-on-surface-variant leading-relaxed">${zone.description}</p>
+              <div class="bar-track mt-3">
+                <div class="bar-fill" style="background:${ZONE_CONFIG[zone.key]?.hex || '#737785'}" data-w="${Math.round((zone.count / maxZone) * 100)}"></div>
+              </div>
+
+              ${zone.modes.length > 0 ? `
+                <div class="mt-4 pt-3 border-t border-outline-variant/20">
+                  <p class="text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider mb-2">Contributing failure modes</p>
+                  <div class="flex flex-col gap-1.5">
+                    ${zone.modes.map(m => `
+                      <div class="flex items-center justify-between">
+                        <span class="text-xs text-on-surface">${m.label}</span>
+                        <span class="text-xs font-semibold text-on-surface">${m.count.toLocaleString()}</span>
+                      </div>
+                    `).join("")}
+                  </div>
+                </div>
+              ` : ""}
+            </div>
+
+            <div class="px-5 py-2 bg-surface-container-low border-t border-outline-variant/20">
+              <p class="text-[10px] text-outline italic">${zone.signal}</p>
+            </div>
+          </div>
+        `;
+      }).join("")}
+    </div>
+    <div class="flex items-start gap-2 p-4 bg-surface-container rounded-xl border border-outline-variant/30">
+      <span class="material-symbols-outlined text-[16px] text-outline shrink-0 mt-0.5">info</span>
+      <p class="text-xs text-on-surface-variant leading-relaxed">
+        <strong class="text-on-surface">Discovery pattern — requires primary validation.</strong>
+        These zones are derived from AI-classified failure modes in public feedback. They represent
+        discovery-stage patterns used to formulate research hypotheses, not independently validated findings.
+        Denominator: <strong class="text-on-surface">${fz.denominator.toLocaleString()} retrieval-relevant cases</strong>.
+      </p>
+    </div>
+  `;
+
+  requestAnimationFrame(() => {
+    document.querySelectorAll(".bar-fill[data-w]").forEach(el => {
+      el.style.width = el.dataset.w + "%";
+    });
+  });
+}
+
+// ── Section 4: Verbatim Evidence ─────────────────────────────────────────────
+function renderSection4(data) {
+  allEvidenceCards   = data.evidence_cards   || [];
+  allFallbackReviews = data.fallback_reviews || [];
+  applyEvidenceFilter();
+}
+
+function filterEvidence() {
+  applyEvidenceFilter();
+}
+
+function applyEvidenceFilter() {
+  const q     = (document.getElementById("evidence-search")?.value || "").toLowerCase().trim();
+  const zone  = activeZone;
+
+  let pool;
+  if (allEvidenceCards.length > 0) {
+    pool = allEvidenceCards.filter(c => {
+      const matchZone  = zone === "all" || c.zone === zone;
+      const matchQuery = !q || (c.text && c.text.toLowerCase().includes(q)) ||
+                              (c.quote && c.quote.toLowerCase().includes(q));
+      return matchZone && matchQuery;
+    });
+    renderEvidenceCards(pool);
+  } else {
+    // Fallback: show raw reviews with basic filter
+    pool = allFallbackReviews.filter(r =>
+      !q || (r.text && r.text.toLowerCase().includes(q))
+    );
+    renderFallbackReviews(pool);
+  }
+}
+
+function renderEvidenceCards(cards) {
+  const grid = document.getElementById("evidence-grid");
+  document.getElementById("evidence-count-badge").textContent =
+    `Showing ${cards.length} evidence record${cards.length !== 1 ? "s" : ""}`;
+
+  if (cards.length === 0) {
+    grid.innerHTML = `<div class="col-span-2 p-8 text-center text-sm text-on-surface-variant">No evidence found for this filter.</div>`;
+    return;
+  }
+
+  grid.innerHTML = cards.map(c => {
+    const zoneCfg    = ZONE_CONFIG[c.zone]  || { badgeBg:"bg-surface-container-high", badgeText:"text-on-surface-variant", accentClass:"" };
+    const outcomeCfg = OUTCOME_CONFIG[c.outcome] || OUTCOME_CONFIG.unknown;
+    const srcCfg     = SOURCE_CONFIG[c.source]   || { label: c.source_label || c.source, icon:"source", bg:"bg-surface-container-high", text:"text-on-surface-variant" };
+
+    return `
+      <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 flex flex-col gap-0 overflow-hidden card-lift">
+
+        <!-- Card header -->
+        <div class="flex items-center justify-between px-5 pt-4 pb-2 border-b border-outline-variant/15">
+          <span class="chip ${srcCfg.bg} ${srcCfg.text}">
+            <span class="material-symbols-outlined text-[11px]">${srcCfg.icon}</span>
+            ${srcCfg.label}${c.date ? " · " + c.date : ""}
+          </span>
+          <span class="chip ${outcomeCfg.bg} ${outcomeCfg.text}">${c.outcome_label}</span>
+        </div>
+
+        <!-- Quote -->
+        <div class="px-5 py-4">
+          <div class="quote-mark">"</div>
+          <p class="text-xs text-on-surface italic leading-relaxed line-clamp-4">${escHtml(c.quote || c.text)}</p>
+        </div>
+
+        <!-- Trace: What they remembered -->
+        ${c.remembered && c.remembered.length > 0 ? `
+          <div class="px-5 pb-3">
+            <p class="text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5">What they remembered</p>
+            <div class="flex flex-wrap gap-1.5">
+              ${c.remembered.map(r => `
+                <span class="chip bg-primary-fixed/60 text-on-primary-fixed">
+                  <span class="material-symbols-outlined text-[10px]">${r.icon}</span>
+                  ${escHtml(r.label)}: ${escHtml(r.value)}
+                </span>
+              `).join("")}
+            </div>
+          </div>
+        ` : ""}
+
+        <!-- Trace: What they tried -->
+        ${c.behaviors && c.behaviors.length > 0 ? `
+          <div class="px-5 pb-3">
+            <p class="text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5">What they tried</p>
+            <div class="flex flex-wrap gap-1.5">
+              ${c.behaviors.map(b => `<span class="chip bg-surface-container-high text-on-surface-variant">${escHtml(b)}</span>`).join("")}
+            </div>
+          </div>
+        ` : ""}
+
+        <!-- Retrieval types -->
+        ${c.retrieval_types && c.retrieval_types.length > 0 ? `
+          <div class="px-5 pb-3">
+            <p class="text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5">Photo type sought</p>
+            <div class="flex flex-wrap gap-1.5">
+              ${c.retrieval_types.map(rt => `<span class="chip bg-secondary-fixed text-on-secondary-fixed">${escHtml(rt)}</span>`).join("")}
+            </div>
+          </div>
+        ` : ""}
+
+        <!-- Footer: problem classification -->
+        <div class="flex items-center justify-between px-5 py-3 bg-surface-container-low border-t border-outline-variant/20 mt-auto">
+          <span class="chip ${zoneCfg.badgeBg} ${zoneCfg.badgeText}">
+            <span class="material-symbols-outlined text-[10px]">warning</span>
+            ${escHtml(c.zone_label)}
+          </span>
+          <span class="text-[10px] text-on-surface-variant">${escHtml(c.failure_mode_label)}</span>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderFallbackReviews(reviews) {
+  const grid = document.getElementById("evidence-grid");
+  document.getElementById("evidence-count-badge").textContent =
+    `Showing ${reviews.length} raw review${reviews.length !== 1 ? "s" : ""} (verbatim only — analysis pipeline not yet run)`;
+
+  if (reviews.length === 0) {
+    grid.innerHTML = `<div class="col-span-2 p-8 text-center text-sm text-on-surface-variant">No reviews match this filter.</div>`;
+    return;
+  }
+
+  grid.innerHTML = reviews.map(r => {
+    const srcCfg = SOURCE_CONFIG[r.source] || { label: r.source_label || r.source, icon:"source", bg:"bg-surface-container-high", text:"text-on-surface-variant" };
+    return `
+      <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 flex flex-col gap-0 overflow-hidden card-lift">
+        <div class="flex items-center justify-between px-5 pt-4 pb-2 border-b border-outline-variant/15">
+          <span class="chip ${srcCfg.bg} ${srcCfg.text}">
+            <span class="material-symbols-outlined text-[11px]">${srcCfg.icon}</span>
+            ${srcCfg.label}${r.date_str ? " · " + r.date_str : ""}
+          </span>
+          ${r.rating ? `<span class="chip bg-surface-container-high text-on-surface-variant">★ ${Math.round(r.rating)}</span>` : ""}
+        </div>
+        <div class="px-5 py-4 flex-1">
+          <div class="quote-mark">"</div>
+          <p class="text-xs text-on-surface italic leading-relaxed">${escHtml(r.text)}</p>
+        </div>
+        <div class="px-5 py-2 bg-surface-container-low border-t border-outline-variant/20">
+          <p class="text-[10px] text-outline italic">Verbatim — run analysis pipeline for structured trace</p>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+// ── Section 5: Discovery Synthesis ────────────────────────────────────────────
+function renderSection5(data) {
+  const patternsEl = document.getElementById("synthesis-patterns");
+  const zones      = data.failure_zones?.zones || [];
+
+  if (zones.length === 0) {
+    patternsEl.innerHTML = `
+      <div class="p-4 bg-surface-container rounded-xl border border-outline-variant/30 text-xs text-on-surface-variant">
+        Pattern summary will appear once the analysis pipeline has been run and failure zones are populated.
+      </div>
+    `;
+    return;
+  }
+
+  patternsEl.innerHTML = zones.map(zone => {
+    const cfg = ZONE_CONFIG[zone.key] || { badgeBg:"bg-surface-container-high", badgeText:"text-on-surface-variant" };
+    return `
+      <div class="flex items-start gap-3 p-4 bg-surface-container rounded-xl border border-outline-variant/30">
+        <span class="chip ${cfg.badgeBg} ${cfg.badgeText} shrink-0 mt-0.5">${zone.hypothesis}</span>
+        <div>
+          <p class="text-sm font-semibold text-on-surface">${zone.label}</p>
+          <p class="text-xs text-on-surface-variant mt-0.5 leading-relaxed">${zone.description}
+            — <strong class="text-on-surface">${zone.count.toLocaleString()} records</strong>
+            (${zone.pct}% of ${data.failure_zones.denominator.toLocaleString()} retrieval cases).
+          </p>
+        </div>
+      </div>
+    `;
+  }).join("") + `
+    <p class="text-xs text-on-surface-variant leading-relaxed mt-1 italic">
+      These patterns were taken into primary research for validation. The discovery engine identifies and compares different retrieval problems using evidence from real users — it does not independently validate hypotheses.
+    </p>
+  `;
+}
+
+// ── Zone filter tabs ──────────────────────────────────────────────────────────
+function setupZoneFilter() {
+  document.getElementById("zone-filter-tabs").addEventListener("click", e => {
+    const btn = e.target.closest(".tab-btn");
+    if (!btn) return;
+    activeZone = btn.dataset.zone;
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    applyEvidenceFilter();
+  });
+}
+
+// ── Nav active highlight on scroll ────────────────────────────────────────────
+function setupNavHighlight() {
+  const sections = ["evidence-base","what-remembered","where-breaks","verbatim-evidence","synthesis","ai-synthesizer"];
+  const navIds   = ["nav-evidence","nav-remember","nav-breaks","nav-verbatim","nav-synthesis","nav-chat"];
+  const scroll   = document.getElementById("main-scroll");
+
+  scroll.addEventListener("scroll", () => {
+    let current = 0;
+    sections.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el && scroll.scrollTop >= el.offsetTop - 120) current = i;
+    });
+    navIds.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.toggle("bg-primary-container",   i === current);
+      el.classList.toggle("text-white",              i === current);
+      el.classList.toggle("font-semibold",           i === current);
+      el.classList.toggle("text-on-surface-variant", i !== current);
+    });
+  }, { passive:true });
+}
+
+// ── AI Synthesizer ────────────────────────────────────────────────────────────
+function runPreset(text) {
+  document.getElementById("chat-input").value = text;
+  sendChat();
+}
+
+function sendChat() {
+  const input   = document.getElementById("chat-input");
+  const query   = input.value.trim();
+  if (!query) return;
+
+  document.getElementById("ai-console-heading").textContent = `Synthesizing: "${query}"`;
+  document.getElementById("ai-console-body").innerHTML = `
+    <div class="flex items-center gap-2 text-primary font-medium italic py-2 text-sm">
+      <span class="material-symbols-outlined text-[20px] animate-spin">auto_awesome</span>
+      Analyzing public feedback patterns…
+    </div>
+  `;
+
+  const api = window.API_BASE_URL || "http://localhost:8000";
+  fetch(`${api}/api/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  })
+    .then(r => r.json())
+    .then(d => {
+      document.getElementById("ai-console-heading").textContent = `AI Synthesis: "${query}"`;
+      document.getElementById("ai-console-body").innerHTML = d.response;
+    })
+    .catch(err => {
+      document.getElementById("ai-console-body").innerHTML =
+        `<div class="text-error text-sm">Error: ${err.message}</div>`;
+    });
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function escHtml(str) {
+  if (!str) return "";
+  return str
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function renderPipelineNotReady(title, message) {
+  return `
+    <div class="p-6 bg-surface-container rounded-2xl border border-outline-variant/30 flex items-start gap-3">
+      <span class="material-symbols-outlined text-[20px] text-outline shrink-0 mt-0.5">pending</span>
+      <div>
+        <p class="text-sm font-semibold text-on-surface">${title} — Not Yet Available</p>
+        <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">${message}</p>
+      </div>
+    </div>
+  `;
+}
 </script>
 </body>
 </html>
