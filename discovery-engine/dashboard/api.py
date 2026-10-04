@@ -17,6 +17,7 @@ app.add_middleware(
 )
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 db_url = os.getenv("DATABASE_URL", "")
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql+psycopg2://", 1)
@@ -573,10 +574,14 @@ async def get_dashboard_data():
 # ── AI Evidence Synthesizer ───────────────────────────────────────────────────
 
 from groq import Groq
-groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+groq_api_key = os.getenv("GROQ_API_KEY")
+groq_client = Groq(api_key=groq_api_key) if groq_api_key else None
 
 @app.post("/api/chat")
 async def chat_endpoint(chat_request: ChatRequest):
+    if not groq_client:
+        return {"response": "<div class='text-error'>Error: GROQ_API_KEY not configured.</div>"}
+    
     clusters = safe_query(_fetch_clusters, DEFAULT_CLUSTERS)
     if not clusters:
         clusters = DEFAULT_CLUSTERS
