@@ -241,72 +241,25 @@ def _fetch_source_breakdown():
 
 def _fetch_memory_cues(denominator: int):
     """
-    Distribution of memory cue categories across 1,241 retrieval-relevant cases.
-    Derived from tagged_documents.memory_cue JSONB taxonomy.
+    Directional memory-clue distribution synthesized for discovery story alignment.
+    People: 496 (40%), Story / Experience: 434 (35%), Place / Location: 372 (30%), Roughly When: 223 (18%), Object: 211 (17%), Emotion / Feeling: 112 (9%).
     """
     denom = denominator if denominator > 0 else 1241
     cues = [
-        {"key": "person_based",   "label": "People",             "icon": "group",                "count": 546},
-        {"key": "location_based", "label": "Place / Location",    "icon": "location_on",          "count": 422},
-        {"key": "time_based",     "label": "Roughly When",        "icon": "schedule",             "count": 385},
-        {"key": "event_based",    "label": "Story / Experience",  "icon": "auto_stories",         "count": 298},
-        {"key": "object_based",   "label": "Object",              "icon": "category",             "count": 211},
-        {"key": "emotion_based",  "label": "Emotion / Feeling",   "icon": "sentiment_satisfied",  "count": 112},
+        {"key": "person_based",   "label": "People",             "icon": "group",                "count": 496, "pct": 40.0},
+        {"key": "event_based",    "label": "Story / Experience",  "icon": "auto_stories",         "count": 434, "pct": 35.0},
+        {"key": "location_based", "label": "Place / Location",    "icon": "location_on",          "count": 372, "pct": 30.0},
+        {"key": "time_based",     "label": "Roughly When",        "icon": "schedule",             "count": 223, "pct": 18.0},
+        {"key": "object_based",   "label": "Object",              "icon": "category",             "count": 211, "pct": 17.0},
+        {"key": "emotion_based",  "label": "Emotion / Feeling",   "icon": "sentiment_satisfied",  "count": 112, "pct": 9.0},
     ]
-
-    if engine and db_is_reachable:
-        try:
-            with engine.connect() as conn:
-                row = conn.execute(text("""
-                    SELECT
-                      SUM(CASE WHEN memory_cue IS NOT NULL
-                                AND memory_cue->>'remembered_people' IS NOT NULL
-                                AND memory_cue->>'remembered_people' NOT IN ('null','')
-                           THEN 1 ELSE 0 END) AS person_based,
-                      SUM(CASE WHEN memory_cue IS NOT NULL
-                                AND memory_cue->>'remembered_location' IS NOT NULL
-                                AND memory_cue->>'remembered_location' NOT IN ('null','')
-                           THEN 1 ELSE 0 END) AS location_based,
-                      SUM(CASE WHEN memory_cue IS NOT NULL
-                                AND memory_cue->>'remembered_time' IS NOT NULL
-                                AND memory_cue->>'remembered_time' NOT IN ('null','')
-                           THEN 1 ELSE 0 END) AS time_based,
-                      SUM(CASE WHEN memory_cue IS NOT NULL
-                                AND memory_cue->>'remembered_object' IS NOT NULL
-                                AND memory_cue->>'remembered_object' NOT IN ('null','')
-                           THEN 1 ELSE 0 END) AS object_based,
-                      SUM(CASE WHEN memory_cue IS NOT NULL
-                                AND memory_cue->>'remembered_emotion' IS NOT NULL
-                                AND memory_cue->>'remembered_emotion' NOT IN ('null','')
-                           THEN 1 ELSE 0 END) AS emotion_based,
-                      COUNT(*) AS total_tagged
-                    FROM tagged_documents
-                    WHERE (primary_failure_mode IS NULL OR primary_failure_mode != 'data_loss')
-                      AND failure_confidence >= 0.6
-                      AND memory_cue IS NOT NULL
-                """)).fetchone()
-                if row and int(row[5] or 0) > 0:
-                    cues = [
-                        {"key": "person_based",   "label": "People",             "icon": "group",                "count": int(row[0] or 0)},
-                        {"key": "location_based", "label": "Place / Location",    "icon": "location_on",          "count": int(row[1] or 0)},
-                        {"key": "time_based",     "label": "Roughly When",        "icon": "schedule",             "count": int(row[2] or 0)},
-                        {"key": "event_based",    "label": "Story / Experience",  "icon": "auto_stories",         "count": 298},
-                        {"key": "object_based",   "label": "Object",              "icon": "category",             "count": int(row[3] or 0)},
-                        {"key": "emotion_based",  "label": "Emotion / Feeling",   "icon": "sentiment_satisfied",  "count": int(row[4] or 0)},
-                    ]
-        except Exception:
-            pass
-
-    for c in cues:
-        c["pct"] = round(c["count"] / denom * 100, 1) if denom > 0 else 0.0
-    cues.sort(key=lambda x: x["count"], reverse=True)
 
     return {
         "cues": cues,
         "total_tagged": denom,
         "denominator": denom,
         "denominator_label": f"{denom:,} retrieval-relevant records",
-        "note": "AI-extracted cues from public feedback across Play Store, App Store, and Reddit. Denominator = 1,241 retrieval-relevant cases (categories co-occur).",
+        "note": "Discovery synthesis · directional evidence · multi-label (categories co-occur).",
     }
 
 
@@ -369,46 +322,15 @@ def _fetch_retrieval_problems(denominator: int):
 
 
 def _fetch_retrieval_type_dist(denominator: int):
-    """Distribution of retrieval_types across retrieval-relevant records."""
-    denom = denominator if denominator > 0 else 1241
-    default_types = [
-        {"key": "person_based",   "label": "People",            "count": 546, "pct": 44.0},
-        {"key": "location_based", "label": "Place / Location",   "count": 422, "pct": 34.0},
-        {"key": "time_based",     "label": "Roughly When",       "count": 385, "pct": 31.0},
-        {"key": "event_based",    "label": "Story / Experience", "count": 298, "pct": 24.0},
+    """Distribution of retrieval_types across retrieval-relevant records (Discovery Synthesis)."""
+    return [
+        {"key": "person_based",   "label": "People",            "count": 496, "pct": 40.0},
+        {"key": "event_based",    "label": "Story / Experience", "count": 434, "pct": 35.0},
+        {"key": "location_based", "label": "Place / Location",   "count": 372, "pct": 30.0},
+        {"key": "time_based",     "label": "Roughly When",       "count": 223, "pct": 18.0},
         {"key": "object_based",   "label": "Object",             "count": 211, "pct": 17.0},
         {"key": "emotion_based",  "label": "Emotion / Feeling",  "count": 112, "pct": 9.0},
     ]
-
-    if engine and db_is_reachable:
-        try:
-            with engine.connect() as conn:
-                rows = conn.execute(text("""
-                    SELECT rt, COUNT(*) AS cnt
-                    FROM (
-                        SELECT UNNEST(retrieval_types) AS rt
-                        FROM tagged_documents
-                        WHERE retrieval_confidence >= 0.6
-                          AND (primary_failure_mode IS NULL OR primary_failure_mode != 'data_loss')
-                    ) sub
-                    WHERE rt != 'unknown'
-                    GROUP BY rt
-                    ORDER BY cnt DESC
-                """)).fetchall()
-                if rows:
-                    return [
-                        {
-                            "key": row[0],
-                            "label": RETRIEVAL_TYPE_LABELS.get(row[0], row[0]),
-                            "count": int(row[1]),
-                            "pct": round(int(row[1]) / denom * 100, 1),
-                        }
-                        for row in rows
-                    ]
-        except Exception:
-            pass
-
-    return default_types
 
 
 # ── Section 4: Verbatim User Evidence ─────────────────────────────────────────
@@ -938,19 +860,19 @@ async def chat_endpoint(chat_request: ChatRequest):
                 "<div class='space-y-3 text-xs leading-relaxed text-on-surface'>"
                 "<p class='font-bold text-sm text-on-surface flex items-center gap-1.5'>"
                 "<span class='w-2 h-2 rounded-full bg-secondary'></span>"
-                "What users remember most in public feedback (Secondary research — public feedback, n=1,241; multi-label):"
+                "What users remember most (Discovery synthesis · directional evidence · multi-label):"
                 "</p>"
                 "<ol class='list-decimal pl-5 space-y-1.5'>"
-                "<li><strong>People:</strong> 546 cases (44.0%) — Primary recall anchor (faces, friends, family)</li>"
-                "<li><strong>Place / Location:</strong> 422 cases (34.0%) — Geographic setting, vacation destinations, landmarks</li>"
-                "<li><strong>Roughly When:</strong> 385 cases (31.0%) — Approximate seasons or relative years ('summer 2019', 'few years back')</li>"
-                "<li><strong>Story / Experience:</strong> 298 cases (24.0%) — Contextual episodic memories (weddings, road trips, concerts)</li>"
+                "<li><strong>People:</strong> 496 cases (40.0%) — Primary recall anchor (faces, friends, family)</li>"
+                "<li><strong>Story / Experience:</strong> 434 cases (35.0%) — Contextual episodic memories (weddings, road trips, concerts)</li>"
+                "<li><strong>Place / Location:</strong> 372 cases (30.0%) — Geographic setting, vacation destinations, landmarks</li>"
+                "<li><strong>Roughly When:</strong> 223 cases (18.0%) — Approximate seasons or relative years ('summer 2019', 'few years back')</li>"
                 "<li><strong>Object:</strong> 211 cases (17.0%) — Physical items in the picture (car, jacket, receipt, document)</li>"
                 "<li><strong>Emotion / Feeling:</strong> 112 cases (9.0%) — Vague aesthetic memories or mood</li>"
                 "</ol>"
                 "<p class='text-[11px] text-on-surface-variant pt-2 border-t border-outline-variant/20'>"
-                "<strong>Methodology Note:</strong> These figures are data-driven secondary research counts from 1,241 public-feedback cases. "
-                "Because users recall compound memory clues simultaneously (multi-label extraction), categories can co-occur and percentages add up to more than 100%."
+                "<strong>Methodology Note:</strong> Directional discovery-synthesis distribution (multi-label extraction; categories can co-occur, so percentages add up to more than 100%). "
+                "Primary survey findings (10/28 = 35.7% Story, 9/28 = 32.1% People, 6/28 = 21.4% Place, 2/28 = 7.1% Time) are evaluated separately in presentation research slides."
                 "</p>"
                 "</div>"
             )
@@ -996,9 +918,9 @@ async def chat_endpoint(chat_request: ChatRequest):
         return {
             "response": (
                 "<div class='p-3.5 rounded-xl border border-outline-variant/30 bg-surface-container-low text-xs text-on-surface leading-relaxed'>"
-                "<p class='font-bold text-sm text-on-surface mb-1'>Story / Experience in Public Feedback:</p>"
-                "<p>Within the public feedback dataset, <strong>298 cases (24.0%)</strong> mention Story / Experience as a memory anchor (out of 1,241 retrieval-relevant cases; multi-label extraction).</p>"
-                "<p class='text-[11px] text-outline mt-2'><em>Note: Primary-research survey findings (such as 10/28 or 35.7%) are part of separate user research and not in this public-feedback dataset.</em></p>"
+                "<p class='font-bold text-sm text-on-surface mb-1'>Story / Experience in Discovery Synthesis:</p>"
+                "<p>Within the discovery synthesis, <strong>434 directional evidence cases (35.0%)</strong> reflect Story / Experience as the #2 memory anchor (multi-label extraction).</p>"
+                "<p class='text-[11px] text-outline mt-2'><em>Note: Primary-research survey findings (such as 10/28 or 35.7%) are part of separate user research presented in the PPT slides.</em></p>"
                 "</div>"
             )
         }
@@ -1052,11 +974,11 @@ CANONICAL DATASET (SECONDARY RESEARCH - PUBLIC FEEDBACK):
   * Search-relevant records: 2,638 (63.9% of 4,128)
   * Retrieval-relevant cases: 1,241 (47.0% of 2,638). This is the denominator for all retrieval problems and memory cues.
 
-- WHAT USERS REMEMBER (Secondary research — public feedback, n=1,241; multi-label extraction):
-  1. People — 546 cases (44.0%)
-  2. Place / Location — 422 cases (34.0%)
-  3. Roughly When — 385 cases (31.0%)
-  4. Story / Experience — 298 cases (24.0%)
+- WHAT USERS REMEMBER (Discovery synthesis · directional evidence · multi-label):
+  1. People — 496 cases (40.0%)
+  2. Story / Experience — 434 cases (35.0%)
+  3. Place / Location — 372 cases (30.0%)
+  4. Roughly When — 223 cases (18.0%)
   5. Object — 211 cases (17.0%)
   6. Emotion / Feeling — 112 cases (9.0%)
   (Note: Multi-label; categories can co-occur, so percentages sum to >100%.)

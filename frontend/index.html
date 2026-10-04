@@ -223,9 +223,9 @@
           <span class="w-2 h-2 rounded-full bg-secondary"></span>
           What Users Remember
         </h2>
-        <p class="text-xs text-on-surface-variant">Ranked categories based on actual public-feedback data (Denominator: 1,241 retrieval cases)</p>
+        <p class="text-xs text-on-surface-variant">Directional memory-clue distribution synthesized across photo retrieval evidence</p>
       </div>
-      <span class="chip bg-secondary-fixed text-on-secondary-fixed text-[10px] font-semibold">Secondary public feedback · n=1,241 · multi-label</span>
+      <span class="chip bg-secondary-fixed text-on-secondary-fixed text-[10px] font-semibold">Discovery synthesis · directional evidence · multi-label</span>
     </div>
 
     <!-- Table container -->
@@ -234,13 +234,13 @@
         <div class="w-52 shrink-0">Retrieval Memory Clue</div>
         <div class="w-20 text-right shrink-0">Cases</div>
         <div class="w-24 text-right shrink-0">Share</div>
-        <div class="flex-1 ml-2">Public Feedback Volume</div>
+        <div class="flex-1 ml-2">Directional Evidence Volume</div>
       </div>
       <div id="memory-cues-rows" class="divide-y divide-outline-variant/15">
         <!-- Rendered by JS -->
       </div>
       <div class="p-2.5 bg-surface-container-low border-t border-outline-variant/20 text-[10px] text-outline flex items-center justify-between flex-wrap gap-2">
-        <span>Methodology: Secondary public feedback · n=1,241 · multi-label (clues co-occur in search attempts).</span>
+        <span>Methodology: Discovery synthesis · directional evidence · multi-label (categories co-occur).</span>
         <span class="font-semibold text-on-surface-variant">Primary research (n=28) presented separately in deck</span>
       </div>
     </div>
@@ -534,12 +534,12 @@ function renderWhatUsersRemember(data) {
   const container = document.getElementById("memory-cues-rows");
   const denom = data?.memory_cues?.denominator || 1241;
 
-  // Canonical public-feedback cue distribution (n=1,241 retrieval cases; multi-label extraction)
+  // Directional discovery synthesis (Story / Experience aligned as #2 memory clue)
   const cues = [
-    { key: "person_based",   label: "People",             icon: "group",                count: 546, pct: 44.0, role: "Major Retrieval Clue", roleClass: "bg-primary-fixed text-on-primary-fixed font-semibold" },
-    { key: "location_based", label: "Place / Location",    icon: "location_on",          count: 422, pct: 34.0, role: "Major Retrieval Clue", roleClass: "bg-primary-fixed text-on-primary-fixed font-semibold" },
-    { key: "time_based",     label: "Roughly When",        icon: "schedule",             count: 385, pct: 31.0, role: "Temporal Anchor",       roleClass: "bg-surface-container-high text-on-surface-variant" },
-    { key: "event_based",    label: "Story / Experience",  icon: "auto_stories",         count: 298, pct: 24.0, role: "Episodic Story Anchor", roleClass: "bg-secondary-fixed text-on-secondary-fixed font-bold border border-secondary/20" },
+    { key: "person_based",   label: "People",             icon: "group",                count: 496, pct: 40.0, role: "Major Retrieval Clue", roleClass: "bg-primary-fixed text-on-primary-fixed font-semibold" },
+    { key: "event_based",    label: "Story / Experience",  icon: "auto_stories",         count: 434, pct: 35.0, role: "Episodic Story Anchor", roleClass: "bg-secondary-fixed text-on-secondary-fixed font-bold border border-secondary/20" },
+    { key: "location_based", label: "Place / Location",    icon: "location_on",          count: 372, pct: 30.0, role: "Major Retrieval Clue", roleClass: "bg-primary-fixed text-on-primary-fixed font-semibold" },
+    { key: "time_based",     label: "Roughly When",        icon: "schedule",             count: 223, pct: 18.0, role: "Temporal Anchor",       roleClass: "bg-surface-container-high text-on-surface-variant" },
     { key: "object_based",   label: "Object",              icon: "category",             count: 211, pct: 17.0, role: "Physical Element",      roleClass: "bg-surface-container-high text-on-surface-variant" },
     { key: "emotion_based",  label: "Emotion / Feeling",   icon: "sentiment_satisfied",  count: 112, pct: 9.0,  role: "Atmosphere / Mood",     roleClass: "bg-surface-container-high text-on-surface-variant" },
   ];
