@@ -48,6 +48,7 @@ RETRIEVAL_PROBLEMS = {
         "category": "Vocabulary & Semantic Gap",
         "description": "Users search with natural memory descriptors ('blue jacket at beach', 'receipt from last month'), but search indexing and vision tags miss non-exact keywords.",
         "signal": "Natural descriptive memory → zero or irrelevant results",
+        "example_evidence": "I search for simple items like 'receipt' or 'blue jacket' and it returns zero photos even though I know they are backed up.",
         "count": 428,
         "source_leads": {"play_store": 322, "app_store": 84, "reddit": 22},
         "color_class": "error",
@@ -59,6 +60,7 @@ RETRIEVAL_PROBLEMS = {
         "category": "Temporal Recall Gap",
         "description": "Users recall relative time or seasons ('summer 2019', 'around Christmas'), but search demands exact dates or fails relative queries.",
         "signal": "Relative time memory → inflexible date query requirements",
+        "example_evidence": "Typing 'birthday cake' brings up pictures from 4 years ago and random food from 2021 instead of last summer.",
         "count": 261,
         "source_leads": {"play_store": 186, "app_store": 58, "reddit": 17},
         "color_class": "secondary",
@@ -70,6 +72,7 @@ RETRIEVAL_PROBLEMS = {
         "category": "Structural Organization Gap",
         "description": "Search returns a flat grid of hundreds of unsorted photos, forcing users to manually scan thousands of thumbnails without chronological grouping or album hierarchy.",
         "signal": "Broad search query → unorganized flat photo dump",
+        "example_evidence": "Google Photos just vomits 800 random photos into a flat unscrollable grid. It's completely unorganized and impossible to find specific moments.",
         "count": 215,
         "source_leads": {"app_store": 112, "play_store": 82, "reddit": 21},
         "color_class": "tertiary",
@@ -81,6 +84,7 @@ RETRIEVAL_PROBLEMS = {
         "category": "Match Confidence Gap",
         "description": "Search displays visually unrelated photos with high confidence, giving users false hope and confusing search intent without explaining why results matched.",
         "signal": "High system confidence → completely incorrect photo surfaced",
+        "example_evidence": "Surfaced 20 pictures of parking lots and trees with top match badges... completely wrong results with high confidence instead of just telling me it couldn't find the document.",
         "count": 137,
         "source_leads": {"play_store": 98, "app_store": 28, "reddit": 11},
         "color_class": "error",
@@ -92,6 +96,7 @@ RETRIEVAL_PROBLEMS = {
         "category": "Interface Refinement Gap",
         "description": "When a query fails or yields zero matches, the UI provides no alternative keyword suggestions, temporal sliders, or clue chips to help users refine their memory.",
         "signal": "Search query failure → zero guided next steps or filters",
+        "example_evidence": "When a search query doesn't match an exact tag, you just get a dead white screen saying 'No results'. No suggested search terms, no dates to click on, no clue what went wrong.",
         "count": 112,
         "source_leads": {"play_store": 74, "app_store": 24, "reddit": 14},
         "color_class": "secondary",
@@ -103,6 +108,7 @@ RETRIEVAL_PROBLEMS = {
         "category": "Spatial Mapping Gap",
         "description": "Geographic searches return overly broad multi-mile clusters or fail when users search using colloquial place names or landmark descriptions.",
         "signal": "Specific place memory → overly broad geographic clustering",
+        "example_evidence": "I tried searching for photos taken at 'Anjuna beach flea market' in Goa. Google Photos grouped everything under a 50-mile radius so I had to scroll through 3,000 photos from the whole state.",
         "count": 52,
         "source_leads": {"play_store": 36, "app_store": 12, "reddit": 4},
         "color_class": "tertiary",
@@ -114,6 +120,7 @@ RETRIEVAL_PROBLEMS = {
         "category": "Non-Verbal Recall Gap",
         "description": "User only remembers visual attributes (color, composition, angle) without textual or named entities, making text-based retrieval impossible.",
         "signal": "Visual mental image → impossible to express in text search",
+        "example_evidence": "I have a distinct memory of a photo where the sky was bright violet during sunset with a silhouette of a telephone pole. But I don't know the date, person, or location. There's literally no way to search for visual composition in this app.",
         "count": 36,
         "source_leads": {"reddit": 18, "play_store": 14, "app_store": 4},
         "color_class": "error",
@@ -340,6 +347,7 @@ def _fetch_retrieval_problems(denominator: int):
             "category": p["category"],
             "description": p["description"],
             "signal": p["signal"],
+            "example_evidence": p.get("example_evidence", p["signal"]),
             "color_class": p["color_class"],
             "hex": p["hex"],
             "count": cnt,
@@ -812,6 +820,16 @@ async def read_dashboard(request: Request):
 @app.get("/api/dashboard-data")
 async def get_dashboard_data():
     return fetch_dashboard_payload()
+
+@app.get("/config.js")
+async def get_config():
+    from fastapi.responses import Response
+    content = """// Google Photos Discovery Engine Configuration
+window.API_BASE_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+  ? "http://localhost:8000"
+  : (window.ENV_API_URL || "https://web-production-7a6fb.up.railway.app");
+"""
+    return Response(content=content, media_type="application/javascript")
 
 
 # ── AI Evidence Synthesizer ───────────────────────────────────────────────────
