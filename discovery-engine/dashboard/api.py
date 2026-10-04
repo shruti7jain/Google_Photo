@@ -24,7 +24,12 @@ if db_url.startswith("postgres://"):
 elif db_url.startswith("postgresql://") and "+psycopg" not in db_url:
     db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
 
-engine = create_engine(db_url, connect_args={"connect_timeout": 3}) if db_url else None
+engine = create_engine(
+    db_url,
+    pool_pre_ping=True,
+    pool_recycle=300,
+    connect_args={"connect_timeout": 5}
+) if db_url else None
 db_is_reachable = True if engine else False
 
 class ChatRequest(BaseModel):
@@ -530,11 +535,11 @@ def _fetch_clusters():
 # ── Master payload ────────────────────────────────────────────────────────────
 
 def fetch_dashboard_payload():
-    global db_is_reachable, engine
-    if db_is_reachable and engine:
+    global db_is_reachable
+    if engine:
         try:
             with engine.connect() as conn:
-                pass
+                db_is_reachable = True
         except Exception:
             db_is_reachable = False
 
