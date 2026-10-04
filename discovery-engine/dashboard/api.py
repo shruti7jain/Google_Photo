@@ -26,6 +26,14 @@ elif db_url.startswith("postgresql://") and "+psycopg" not in db_url:
 
 engine = create_engine(db_url, connect_args={"connect_timeout": 3}) if db_url else None
 
+if engine:
+    try:
+        with engine.connect() as conn:
+            pass
+    except Exception:
+        print("Warning: Database unreachable. Dashboard will use fallback data.")
+        engine = None
+
 class ChatRequest(BaseModel):
     query: str
 
