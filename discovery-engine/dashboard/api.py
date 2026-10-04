@@ -25,14 +25,7 @@ elif db_url.startswith("postgresql://") and "+psycopg" not in db_url:
     db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
 
 engine = create_engine(db_url, connect_args={"connect_timeout": 3}) if db_url else None
-
-if engine:
-    try:
-        with engine.connect() as conn:
-            pass
-    except Exception:
-        print("Warning: Database unreachable. Dashboard will use fallback data.")
-        engine = None
+db_is_reachable = True if engine else False
 
 class ChatRequest(BaseModel):
     query: str
@@ -519,6 +512,17 @@ def _fetch_clusters():
 # ── Master payload ────────────────────────────────────────────────────────────
 
 def fetch_dashboard_payload():
+    global db_is_reachable, engine
+    if db_is_reachable and engine:
+        try:
+            with engine.connect() as conn:
+                pass
+        except Exception:
+            db_is_reachable = False
+
+    if not db_is_reachable:
+        engine = None
+
     # Section 1 — pipeline funnel counts
     total_raw, total_filtered, total_retrieval_relevant = safe_query(
         _fetch_pipeline_counts, (4128, 2638, 1241)
